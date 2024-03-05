@@ -6,6 +6,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { ReloadIcon } from "@radix-ui/react-icons"
+import toast from 'react-hot-toast'
 
 const page = () => {
 
@@ -22,9 +23,11 @@ const page = () => {
             setLoading(true)
             const response = await axios.post("/api/users/signup", user)
             console.log("signup success", response.data)
+            toast.success("Signup Succesful")
             router.push("/Login");
-        } catch (error) {
+        } catch (error:any) {
             console.log("sign up failed!", error)
+            toast.error(error.message)
 
         }
         finally {
