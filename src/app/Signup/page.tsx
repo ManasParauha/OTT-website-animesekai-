@@ -7,6 +7,8 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { ReloadIcon } from "@radix-ui/react-icons"
 import toast from 'react-hot-toast'
+import Image from 'next/image'
+import poster from '../../../public/Poster.jpg'
 
 const page = () => {
 
@@ -37,7 +39,13 @@ const page = () => {
     const [loading, setLoading] = React.useState(false);
     return (
         <div className=' h-screen w-screen overflow-hidden flex text-foreground'>
-            <div className=' hidden md:block h-screen w-[50vw] bg-lime-300'></div>
+            <div className=' hidden md:block h-screen w-[50vw] bg-black'>
+            <Image
+        src={poster}
+        className=' h-screen w-[50vw]  object-contain'
+        alt='poster-image'
+        />
+            </div>
             <div className=' h-screen w-screen  md:w-[50vw] bg-background text-foreground flex justify-center items-center flex-col '>
                 {loading ? (<Button disabled >
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />

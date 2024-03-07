@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import NavbarMD from "@/components/NavbarMD";
+
+
 
 export default function Home() {
   const router = useRouter()
@@ -22,8 +25,10 @@ export default function Home() {
   }
   return (
     
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Button onClick={logout}>logout</Button>
+    <main className="flex ">
+      <NavbarMD/>
+     
+      
     </main>
   );
 }
