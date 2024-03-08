@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Logo from '../../public/logo.png'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -26,6 +26,25 @@ import axios from 'axios';
 const Navbar = () => {
 
     const router = useRouter()
+
+ 
+    const [data,setData] = React.useState("Username");
+
+    useEffect(() => {
+        const userDetails = async () => {
+            const res = await axios.get('/api/users/me');
+            console.log(res.data);
+            setData(res.data.data.username)
+        }
+
+        userDetails()
+    
+        
+      }, []);
+
+
+
+
   const logout = async ()=>{
       try {
         await axios.get("/api/users/logout")
@@ -40,10 +59,10 @@ const Navbar = () => {
       }
   }
 
-    const [width, setWidth] = React.useState(false)
+    
 
     return (
-        <nav className=' bg-primary/5 text-foreground h-screen w-24 flex flex-col  items-center  justify-around hover:w-48 transition-all group  ' >
+        <nav className=' bg-primary/5 text-foreground h-screen w-16 md:w-24 flex flex-col  items-center  justify-around hover:w-40 md:hover:w-48 transition-all group  ' >
 
 
             <Image src={Logo} alt='Logo' height={60} width={60} />
@@ -51,7 +70,7 @@ const Navbar = () => {
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="outline" className='flex gap-3'
-                    ><AccountCircleIcon /> <p className='hidden group-hover:block transition'>Username</p></Button>
+                    ><AccountCircleIcon /> <p className='hidden group-hover:block transition'>{data === "Username" ? "Username" : `${data}` }</p></Button>
                 </SheetTrigger>
                 <SheetContent >
                     <SheetHeader>
@@ -83,7 +102,7 @@ const Navbar = () => {
             </Sheet>
 
             <ul className='flex flex-col gap-12'>
-                {/* <li className='flex gap-6 font-semibold'><AccountCircleIcon />{width && <p className=' transition'>Username</p>}</li> */}
+                
                 <li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block'>Search</p></li>
                 <li className='flex gap-6 font-semibold'><HomeIcon /> <p className=' transition hidden group-hover:block'>Home</p></li>
                 <li className='flex gap-6 font-semibold'><TvIcon /> <p className=' transition hidden group-hover:block'>Series</p></li>
