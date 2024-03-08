@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
-import Logo from '../../public/logo.png'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import HomeIcon from '@mui/icons-material/Home';
-import TvIcon from '@mui/icons-material/Tv';
-import MovieCreationIcon from '@mui/icons-material/MovieCreation';
+import Logo from "../../public/logo.png"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import axios from 'axios'
 import {
     Sheet,
     SheetClose,
@@ -19,17 +16,10 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import LogoutIcon from '@mui/icons-material/Logout';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-const Navbar = () => {
 
-    const router = useRouter()
-
- 
+const LogoUser = () => {
+    
     const [data,setData] = React.useState("Username");
-
     useEffect(() => {
         const userDetails = async () => {
             const res = await axios.get('/api/users/me');
@@ -41,36 +31,13 @@ const Navbar = () => {
     
         
       }, []);
-
-
-
-
-  const logout = async ()=>{
-      try {
-        await axios.get("/api/users/logout")
-        toast.success("Logout Successful")
-        router.push("/Login")
-      } catch (error:any) {
-
-        console.log(error.message);
-
-        toast.error(error.message)
-        
-      }
-  }
-
-    
-
-    return (
-        <nav className=' bg-primary/5 text-foreground h-screen w-24 hidden md:flex flex-col  items-center  justify-around hover:w-48 transition-all group  ' >
-
-
-            <Image src={Logo} alt='Logo' height={60} width={60} />
-
-            <Sheet>
+  return (
+     <header className='md:hidden bg-primary/5 w-full h-16 flex  items-center p-3 justify-between'>
+        <Image src={Logo} width={50} height={15} alt='Logo'/>
+        <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="outline" className='flex gap-3'
-                    ><AccountCircleIcon /> <p className='hidden group-hover:block transition'>{data === "Username" ? "Username" : `${data}` }</p></Button>
+                    ><AccountCircleIcon /> <p >{data === "Username" ? "Username" : `${data}` }</p></Button>
                 </SheetTrigger>
                 <SheetContent side='bottom'>
                     <SheetHeader>
@@ -100,20 +67,9 @@ const Navbar = () => {
                     </SheetFooter>
                 </SheetContent>
             </Sheet>
-
-            <ul className='flex flex-col gap-12'>
-                
-                <li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block'>Search</p></li>
-                <li className='flex gap-6 font-semibold'><HomeIcon /> <p className=' transition hidden group-hover:block'>Home</p></li>
-                <li className='flex gap-6 font-semibold'><TvIcon /> <p className=' transition hidden group-hover:block'>Series</p></li>
-                <li className='flex gap-6 font-semibold'><MovieCreationIcon /> <p className=' transition hidden group-hover:block'>Movies</p></li>
-            </ul>
-
-            <Button onClick={logout} ><LogoutIcon/><p className='transition hidden group-hover:block'>Logout</p></Button>
-
-        </nav>
-
-    )
+ 
+     </header>
+  )
 }
 
-export default Navbar
+export default LogoUser

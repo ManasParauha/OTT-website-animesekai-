@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import NavbarMD from "@/components/NavbarMD";
+import Navbar from "@/components/Navbar";
+import LogoUser from "@/components/LogoUser";
 
 
 
@@ -27,8 +29,12 @@ export default function Home() {
     
     <main className="flex ">
       <NavbarMD/>
+      <LogoUser/>
      
-      
+
+
+
+     <Navbar/> 
     </main>
   );
 }
