@@ -62,7 +62,7 @@ const Navbar = () => {
     
 
     return (
-        <nav className=' bg-primary/5 text-foreground h-screen w-24 hidden md:flex flex-col  items-center  justify-around hover:w-48 transition-all group  ' >
+        <nav className=' bg-background/65 text-foreground h-screen w-24 hidden md:flex flex-col  items-center  justify-around hover:w-48 transition-all group  ' >
 
 
             <Image src={Logo} alt='Logo' height={60} width={60} />
@@ -70,7 +70,7 @@ const Navbar = () => {
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="outline" className='flex gap-3'
-                    ><AccountCircleIcon /> <p className='hidden group-hover:block transition'>{data === "Username" ? "Username" : `${data}` }</p></Button>
+                    ><AccountCircleIcon /> <p className='hidden group-hover:block transition '>{data === "Username" ? "Username" : `${data}` }</p></Button>
                 </SheetTrigger>
                 <SheetContent side='bottom'>
                     <SheetHeader>
@@ -103,10 +103,10 @@ const Navbar = () => {
 
             <ul className='flex flex-col gap-12'>
                 
-                <li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block'>Search</p></li>
-                <li className='flex gap-6 font-semibold'><HomeIcon /> <p className=' transition hidden group-hover:block'>Home</p></li>
-                <li className='flex gap-6 font-semibold'><TvIcon /> <p className=' transition hidden group-hover:block'>Series</p></li>
-                <li className='flex gap-6 font-semibold'><MovieCreationIcon /> <p className=' transition hidden group-hover:block'>Movies</p></li>
+                <li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block cursor-pointer'>Search</p></li>
+                <li className='flex gap-6 font-semibold '><HomeIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Home</p></li>
+                <li className='flex gap-6 font-semibold'><TvIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Series</p></li>
+                <li className='flex gap-6 font-semibold'><MovieCreationIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Movies</p></li>
             </ul>
 
             <Button onClick={logout} ><LogoutIcon/><p className='transition hidden group-hover:block'>Logout</p></Button>

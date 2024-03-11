@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import NavbarMD from "@/components/NavbarMD";
 import Navbar from "@/components/Navbar";
 import LogoUser from "@/components/LogoUser";
+import HeroSection from "@/components/HeroSection";
 
 
 
@@ -27,9 +28,11 @@ export default function Home() {
   }
   return (
     
-    <main className="flex ">
-      <NavbarMD/>
+    <main className="flex flex-col md:flex-row">
+      <div className="fixed left-0 top-0 z-10"><NavbarMD/></div>
+      
       <LogoUser/>
+      <div className="md:w-full md:ml-24"><HeroSection/></div>
      
 
 

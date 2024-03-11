@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 import {
     Sheet,
     SheetClose,
@@ -16,8 +18,11 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const LogoUser = () => {
+
+    const router = useRouter()
     
     const [data,setData] = React.useState("Username");
     useEffect(() => {
@@ -31,9 +36,25 @@ const LogoUser = () => {
     
         
       }, []);
+      const logout = async ()=>{
+        try {
+          await axios.get("/api/users/logout")
+          toast.success("Logout Successful")
+          router.push("/Login")
+        } catch (error:any) {
+  
+          console.log(error.message);
+  
+          toast.error(error.message)
+          
+        }
+    }
   return (
-     <header className='md:hidden bg-primary/5 w-full h-16 flex  items-center p-3 justify-between'>
+     <header className='md:hidden bg-primary/5 w-full h-16 flex  items-center p-5 justify-between'>
         <Image src={Logo} width={50} height={15} alt='Logo'/>
+        
+        <div className='flex gap-2'>
+        
         <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="outline" className='flex gap-3'
@@ -67,6 +88,8 @@ const LogoUser = () => {
                     </SheetFooter>
                 </SheetContent>
             </Sheet>
+            <Button onClick={logout}  ><LogoutIcon/></Button>
+        </div>
  
      </header>
   )
