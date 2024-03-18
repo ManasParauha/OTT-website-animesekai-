@@ -50,7 +50,7 @@ const LogoUser = () => {
         }
     }
   return (
-     <header className='md:hidden bg-primary/5 w-full h-16 flex  items-center p-5 justify-between'>
+     <header className='md:hidden bg-background w-full h-16 flex  items-center p-5 justify-between'>
         <Image src={Logo} width={50} height={15} alt='Logo'/>
         
         <div className='flex gap-2'>

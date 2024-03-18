@@ -5,7 +5,7 @@ import TvIcon from '@mui/icons-material/Tv';
 import MovieCreationIcon from '@mui/icons-material/MovieCreation';
 const Navbar = () => {
   return (
-    <nav className='fixed md:hidden bottom-0 left-0 w-full h-20 bg-primary/5 flex justify-around items-center'>
+    <nav className='fixed md:hidden bottom-0 left-0 w-full h-20 bg-background flex justify-around items-center'>
         <HomeIcon/>
         <SearchIcon/>
         <TvIcon/>

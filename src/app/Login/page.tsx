@@ -66,7 +66,7 @@ const page = () => {
             </div>
             <Button onClick={onLogin}>Sign in</Button>
             <p className=' text-sm'>Don't have a account yet?<Button asChild variant="link">
-                        <Link href="/Signup">Sign in</Link>
+                        <Link href="/Signup">Sign up</Link>
                     </Button></p>
 
         </div>
