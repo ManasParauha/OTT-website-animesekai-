@@ -1,5 +1,5 @@
 import {connect} from "@/dbConfig/dbConfig"
-import Video from "@/models/videoModel"
+import Video from "@/models/videoModel.js"
 import { NextRequest,NextResponse } from "next/server"
 
 
@@ -8,7 +8,7 @@ connect()
 export async function POST(request:NextRequest) {
     try {
         const reqBody = await request.json();
-        const {title,description,episode,url} = reqBody;
+        const {title, description,episode,url} = reqBody;
 
         console.log(reqBody)
 
@@ -20,6 +20,9 @@ export async function POST(request:NextRequest) {
             return NextResponse.json({error:"video already exists"},{status:400})   
         }
 
+      
+
+        
 
        const newVideo =  new Video({
             title,
