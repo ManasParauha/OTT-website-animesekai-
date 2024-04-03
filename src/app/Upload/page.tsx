@@ -45,7 +45,7 @@ const page = () => {
   return (
     <div className=' h-screen w-screen overflow-hidden flex justify-center items-center  '>
 
-      <div className=' border-border w-[40vw] h-[90vh] border-2 flex flex-col gap-5 justify-center px-7'>
+      <div className=' border-border w-[99vw]   sm:w-[57vw] md:w-[47vw] h-[90vh] border-2 flex flex-col gap-5 justify-center px-7'>
 
         <h6 className=' text-xl font-bold'>Upload the video here</h6>
 
