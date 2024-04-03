@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { EdgeStoreProvider } from '../lib/edgestore';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}> <ThemeProvider
+      <body className={inter.className}> <EdgeStoreProvider><ThemeProvider
         attribute="class"
         defaultTheme="system"
         enableSystem
@@ -29,7 +30,7 @@ export default function RootLayout({
           position="top-center"
           reverseOrder={false}
         />
-      </ThemeProvider></body>
+      </ThemeProvider> </EdgeStoreProvider> </body>
     </html>
   );
 }
