@@ -8,7 +8,7 @@ connect()
 export async function POST(request:NextRequest) {
     try {
         const reqBody = await request.json();
-        const {title, description,episode,url} = reqBody;
+        const {title, description,episode,url,thumbnail} = reqBody;
 
         console.log(reqBody)
 
@@ -28,7 +28,8 @@ export async function POST(request:NextRequest) {
             title,
             description,
             episode,
-            url
+            url,
+            thumbnail
         })
 
         const savedVideo =await newVideo.save()

@@ -47,8 +47,8 @@ export default function Home() {
         <div className="w-full relative md:ml-24 flex flex-col overflow-x-hidden">
           <LogoUser />
           <HeroSection />
-          <TopMovies />
           <TopSeries/>
+          <TopMovies />
 
 
           <Navbar />

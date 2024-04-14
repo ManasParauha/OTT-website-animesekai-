@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 const HeroSection = () => {
   const [title,setTitle] = React.useState("");
   const [description,setDescription] = React.useState("");
+  const [thumbnail,setThumbnail] = React.useState("");
   const [url,seturl] = React.useState("");
      
   useEffect(() => {
@@ -21,6 +22,7 @@ const HeroSection = () => {
         console.log(res.data);
         setTitle(res.data.data.title)
         setDescription(res.data.data.description)
+        setThumbnail(res.data.data.thumbnail)
         seturl(res.data.data.url)
         
     }
@@ -33,7 +35,7 @@ const HeroSection = () => {
   return (
     <div className='w-full h-72 md:h-96 relative overflow-hidden  '>
       
-      <div className=' overflow-hidden'> <video src={url} autoPlay muted className='h-full w-full opacity-[0.7]'></video></div>
+      <div className=' overflow-hidden'> <video src={url} poster={thumbnail} autoPlay muted className='h-full w-full opacity-[0.7]'></video></div>
 
 
 
