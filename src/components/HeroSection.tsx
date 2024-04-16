@@ -35,7 +35,7 @@ const HeroSection = () => {
   return (
     <div className='w-full h-72 md:h-96 relative overflow-hidden  '>
       
-      <div className=' overflow-hidden'> <video src={url} poster={thumbnail} autoPlay muted className='h-full w-full opacity-[0.7]'></video></div>
+      <div className=' overflow-hidden'> <video  src={url} poster={thumbnail} autoPlay muted className='h-full w-full opacity-[0.7]'></video></div>
 
 
 
