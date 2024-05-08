@@ -74,7 +74,7 @@ const TopSeries = () => {
     <div className='flex flex-col gap-3 w-full mt-4 '>
 
       <h6 className='text-3xl font-bold'>
-        
+        Top Series
       </h6>
 
    

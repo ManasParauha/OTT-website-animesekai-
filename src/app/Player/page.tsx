@@ -19,7 +19,8 @@ searchParams:{
       title:string,
       description:string,
       episode?:number,
-      url:string
+      url:string,
+      thumbnail:string
 }}
 ) => {
   
@@ -33,7 +34,7 @@ searchParams:{
                 <video controls src={searchParams.url} className=' object-fill w-full h-[40vh]  sm:h-[50vh] md:w-[80vw] md:h-[70vh]  md:mt-10 sm:mt-16 mt-20 '></video>
 
                 <div className='flex gap-2 mt-3 w-full md:ml-28'>
-                    <Image src={poster} alt='Thumbnail' className='h-20 w-28'/>
+                    <Image src={searchParams.thumbnail || poster} width={70} height={70} alt='Thumbnail' className='h-20 w-28'/>
                     <div className='flex gap-1 flex-col '>
                         <h6 className='text-foreground text-2xl font-semibold'>{searchParams.title}</h6>
                         <p className='text-muted-foreground text-sm'>Episode - {searchParams.episode}</p>

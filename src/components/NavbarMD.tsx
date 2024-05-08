@@ -23,7 +23,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-const Navbar = () => {
+import Link from 'next/link';
+const NavbarMD = () => {
 
     const router = useRouter()
 
@@ -103,9 +104,9 @@ const Navbar = () => {
 
             <ul className='flex flex-col gap-12'>
                 
-                <li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block cursor-pointer'>Search</p></li>
-                <li className='flex gap-6 font-semibold '><HomeIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Home</p></li>
-                <li className='flex gap-6 font-semibold'><TvIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Series</p></li>
+                <Link href="/search"><li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block cursor-pointer'>Search</p></li></Link>
+                <Link href="/"><li className='flex gap-6 font-semibold '><HomeIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Home</p></li></Link>
+                <li className='flex gap-6 font-semibold' ><TvIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Series</p></li>
                 <li className='flex gap-6 font-semibold'><MovieCreationIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Movies</p></li>
             </ul>
 
@@ -116,4 +117,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default NavbarMD
