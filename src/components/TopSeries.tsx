@@ -36,16 +36,16 @@ const TopSeries = () => {
   {title:string,
   description:string,
   thumbnail:string,
-  episode:number,
-  url:string
+  episode:[],
+  
   }[]>([])
 
 
   useEffect(() => {
-    const videoDetails = async () => {
+    const seriesDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get('/api/admin/fetchTopMovies');
+        const res = await axios.get('/api/admin/fetchSeriesHome');
       // console.log(res.data.data);
       setData(res.data.data)
       } catch (error:any) {
@@ -60,7 +60,7 @@ const TopSeries = () => {
 
     }
 
-    videoDetails()
+    seriesDetails()
 
 
   }, []);

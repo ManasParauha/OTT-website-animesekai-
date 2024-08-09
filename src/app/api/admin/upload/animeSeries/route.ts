@@ -1,5 +1,5 @@
 import {connect} from "@/dbConfig/dbConfig"
-import Video from "@/models/videoModel.js"
+import Series from "@/models/seiresModel.js"
 import { NextRequest,NextResponse } from "next/server"
 
 
@@ -8,38 +8,37 @@ connect()
 export async function POST(request:NextRequest) {
     try {
         const reqBody = await request.json();
-        const {title, description,episode,url,thumbnail} = reqBody;
+        const {title, description,thumbnail,episodes} = reqBody;
 
         console.log(reqBody)
 
         //check if video already exists
 
-        const video = await Video.findOne({title},{episode})
+        const series = await Series.findOne({title})
 
-        if(video){
-            return NextResponse.json({error:"video already exists"},{status:400})   
+        if(series){
+            return NextResponse.json({error:"series already exists"},{status:400})   
         }
 
       
 
         
 
-       const newVideo =  new Video({
+       const newSeries =  new Series({
             title,
             description,
-            episode,
-            url,
-            thumbnail
+            thumbnail,
+            episodes
         })
 
-        const savedVideo =await newVideo.save()
+        const savedSeries =await newSeries.save()
 
-        console.log(savedVideo)
+        console.log(savedSeries)
 
         return NextResponse.json({
-            message:"Video created succesfully",
+            message:"Series created succesfully",
             success:true,
-            savedVideo
+            savedSeries
         })
 
         

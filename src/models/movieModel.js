@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-const videoSchema = new mongoose.Schema({
+const movieSchema = new mongoose.Schema({
 
     title:{
         type:String,
@@ -15,10 +15,6 @@ const videoSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    episode:{
-        type:Number,
-        required:false,
-    },
     description:{
         type:String,
         required:false
@@ -27,6 +23,6 @@ const videoSchema = new mongoose.Schema({
 })
 
 
-const Video = mongoose.models.videos || mongoose.model("videos",videoSchema)
+const Movie = mongoose.models.movies || mongoose.model("movies",movieSchema)
 
-export default Video; 
+export default Movie; 

@@ -55,7 +55,7 @@ const SearchResult = ({ query }: { query: string }) => {
     return (
         <div>
             {Array.isArray(data) && data.length === 0 && (
-                <p>No audio files found</p>
+                <p>No video files found</p>
             )}
 
             <div className='flex w-full mt-4 gap-4 flex-wrap justify-center items-center  '>

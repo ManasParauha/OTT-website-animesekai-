@@ -15,7 +15,6 @@ const page = () => {
   const [video, setVideo] = React.useState({
     title: "",
     description: "",
-    episode: '',
     url: "",
     thumbnail:''
   })
@@ -34,7 +33,7 @@ const page = () => {
 
     try {
 
-      const response = await axios.post("/api/admin/upload", video)
+      const response = await axios.post("/api/admin/upload/animeMovies", video)
       console.log("Upload success", response.data)
       toast.success("Uploaded Succesful")
 
@@ -50,7 +49,7 @@ const page = () => {
 
       <div className=' border-border w-[99vw]   sm:w-[57vw] md:w-[47vw] h-[90vh] border-2 flex flex-col gap-5 justify-center px-7'>
 
-        <h6 className=' text-xl font-bold'>Upload the video here</h6>
+        <h6 className=' text-xl font-bold'>Upload the Movie here</h6>
 
         <div><p className=' text-sm font-semibold'> Title</p>
           <Input type="text" placeholder="title" value={video.title}
@@ -60,9 +59,7 @@ const page = () => {
           <Input type="textarea" placeholder="description" value={video.description}
             onChange={(e) => setVideo({ ...video, description: e.target.value })} /></div>
 
-        <div><p className=' text-sm font-semibold'> Episode</p>
-          <Input type="number" placeholder="episode" value={video.episode}
-            onChange={(e) => setVideo({ ...video, episode: e.target.value })} /></div>
+        
 
         <div ><p className=' text-sm font-semibold'> Thumbnail</p>
           <Progress value={tprogress}  className=' my-2' />

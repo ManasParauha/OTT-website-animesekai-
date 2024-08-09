@@ -1,7 +1,7 @@
 
 
 import { NextRequest, NextResponse } from "next/server";
-import Video from "@/models/videoModel.js";
+import Series from "@/models/seiresModel.js";
 import { connect } from "@/dbConfig/dbConfig";
 
 connect();
@@ -10,10 +10,10 @@ export async function GET(request:NextRequest){
 
     try {
         
-        const video = await Video.findOne({}).select("-password");
+        const series = await Series.find().limit(3);
         return NextResponse.json({
-            mesaaage: "Video found",
-            data: video
+            mesaaage: "series found",
+            data: series
         })
     } catch (error:any) {
         return NextResponse.json({error: error.message}, {status: 400});
