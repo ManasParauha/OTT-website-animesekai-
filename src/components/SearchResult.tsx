@@ -18,7 +18,6 @@ const SearchResult = ({ query }: { query: string }) => {
             title: string,
             description: string,
             thumbnail: string,
-            episode: number,
             url: string
         }[]>([])
 
@@ -26,9 +25,12 @@ const SearchResult = ({ query }: { query: string }) => {
         const videoDetails = async () => {
             try {
                 setIsLoading(true);
-                const res = await axios.get('/api/admin/fetchTopMovies');
+                const res = await axios.get('/api/admin/fetchMoviesHome');
+                const res1 = await axios.get('/api/admin/fetchSeriesHome');
                 // console.log(res.data.data);
-                setData(res.data.data)
+                setData([...res.data.data, ...res1.data.data]);
+
+
             } catch (error: any) {
                 console.log("video fetching failed", error.message);
                 toast.error(error.message);
