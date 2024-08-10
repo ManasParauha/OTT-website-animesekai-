@@ -36,6 +36,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+import Logo1 from "../../public/Logo1.png"
+import Logo2 from "../../public/Logo2.png"
+
 const NavbarMD = () => {
 
     const { setTheme } = useTheme()
@@ -80,7 +84,7 @@ const NavbarMD = () => {
         <nav className=' bg-background/65 text-foreground h-screen w-24 hidden md:flex flex-col  items-center  justify-around hover:w-48 transition-all group  ' >
 
 
-            <Image src={Logo} alt='Logo' height={60} width={60} />
+            <Image src={Logo1} alt='Logo' height={60} width={60} />
 
 
 
