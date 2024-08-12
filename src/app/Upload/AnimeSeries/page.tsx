@@ -53,8 +53,8 @@ const page = () => {
   const [seriesProgress, setSeriesProgress] = useState(0);
 
   const [seriesThumbnail, setSeriesThumbnail] = React.useState<File>();
-  const [episodeThumbnail, setEpisodeThumbnail] = React.useState<File>();
-  const [file, setFile] = React.useState<File>();
+  const [episodeThumbnail, setEpisodeThumbnail] = React.useState<File | undefined>(undefined);
+  const [file, setFile] = React.useState<File | undefined>(undefined);
 
   const handleChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -93,7 +93,7 @@ const page = () => {
   // };
   
 
-  
+  const fileInputRef = useRef<HTMLInputElement>(null);
    
   const addEpisode = () => {
     setFormData({ ...formData, episodes: [...formData.episodes, episode] });
@@ -102,8 +102,11 @@ const page = () => {
     setEpisodeProgress(0);
     setEpisodeVideoProgress(0);
    
-    
-    
+    setEpisodeThumbnail(undefined)
+    setFile(undefined)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     
     setEpisode({ episodeNo: formData.episodes.length + 1, thumbnail: '', url: '' }); // Set episode number based on existing episodes
     
@@ -186,7 +189,7 @@ const page = () => {
                 <div ><p className=' text-sm font-semibold'> Thumbnail</p>
                   <Progress value={episodeProgress} className=' my-2' />
                   <div className='flex'>
-                    <Input type="file"  onChange={(e) => {
+                    <Input type="file" ref={fileInputRef}  onChange={(e) => {
                       setEpisodeThumbnail(e.target.files?.[0])
                     }}   />
                     <Button onClick={async () => {
@@ -212,7 +215,7 @@ const page = () => {
               <div ><p className=' text-sm font-semibold'> Video</p>
                 <Progress value={episodeVideoProgress} className=' my-2' />
                 <div className='flex'>
-                  <Input type="file"   onChange={(e) => {
+                  <Input type="file" ref={fileInputRef}   onChange={(e) => {
                     setFile(e.target.files?.[0]) 
                   }} />
                   <Button onClick={async () => {
