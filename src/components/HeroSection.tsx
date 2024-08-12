@@ -18,7 +18,7 @@ const HeroSection = () => {
      
   useEffect(() => {
     const videoDetails = async () => {
-        const res = await axios.get('/api/admin/fetchHeroVideo1');
+        const res = await axios.get('/api/admin/fetchHeroVideo');
         console.log(res.data);
         setTitle(res.data.data.title)
         setDescription(res.data.data.description)

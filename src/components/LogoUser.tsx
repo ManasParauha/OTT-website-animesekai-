@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import Logo1 from "../../public/Logo1.png"
 
 
 const LogoUser = () => {
@@ -64,7 +65,7 @@ const LogoUser = () => {
     }
   return (
      <header className='md:hidden bg-background w-full h-16 flex  items-center p-5 justify-between'>
-        <Image src={Logo} width={50} height={15} alt='Logo'/>
+        <Image src={Logo1} width={50} height={15} alt='Logo'/>
 
 
         <DropdownMenu>
