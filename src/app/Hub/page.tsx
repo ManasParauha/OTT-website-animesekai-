@@ -7,6 +7,10 @@ import SendIcon from '@mui/icons-material/Send';
 import NavbarMD from '@/components/NavbarMD';
 import Navbar from '@/components/Navbar';
 import { Textarea } from '@/components/ui/textarea';
+import { useEdgeStore } from '@/lib/edgestore'
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 
 import {
@@ -16,31 +20,143 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Progress } from '@/components/ui/progress';
 
 
 const page = () => {
-  return (
+  const [video, setVideo] = React.useState({
+    title: "",
+    description: "",
+    url: "",
+    thumbnail: ''
+  })
 
+  const [file, setFile] = React.useState<File>();
+  const [thumbnail, setThumbnail] = React.useState<File>();
+  const [tprogress, setTprogress] = React.useState(0)
+
+  const [progress, setProgress] = React.useState(0)
+
+  const { edgestore } = useEdgeStore();
+
+  const onUpload = async () => {
+
+    try {
+
+      const response = await axios.post("/api/users/uploadHub", video)
+      console.log("Upload success", response.data)
+      toast.success("Uploaded Succesful");
+      window.location.reload();
+
+
+    } catch (error: any) {
+      console.log("Upload failed!", error)
+      toast.error(error.message)
+    }
+  }
+
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [data, setData] = React.useState<
+  {title:string,
+  description:string,
+  thumbnail:string,
+  url:string
+  }[]>([])
+
+
+  useEffect(() => {
+    const hubDetails = async () => {
+      try {
+        setIsLoading(true);
+        const res = await axios.get('/api/users/hubList');
+      // console.log(res.data.data);
+      setData(res.data.data)
+      } catch (error:any) {
+        console.log("video fetching failed",error.message);
+        toast.error(error.message);
+      }
+      finally{
+        setIsLoading(false);
+      }
+
+
+
+    }
+
+    hubDetails()
+
+
+  }, []);
+
+
+
+
+  return (
     <div className='flex'>
-      <NavbarMD />
+      <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div>
       <div className='h-screen w-screen flex-col  overflow-y-auto flex py-5 gap-2'>
 
         <div className=' h-[10vh] flex justify-center  '> <Dialog>
-      <DialogTrigger asChild>
-      <Button className='w-[50vw]'>Upload</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-           <div><Label>Enter Title</Label>
-           <Input type='text' /></div>
-           <div><Label>Enter Description</Label>
-           <Textarea placeholder="Type your Description here." /></div>
-           <div><Label>Upload Thumbnail</Label>
-           <div className='flex'><Input type='file' /><Button>Confirm</Button></div></div>
-           <div><Label>Upload Video</Label>
-           <div className='flex'><Input type='file' /><Button>confirm</Button></div></div>
-           <Button type='submit'>Submit</Button>
-      </DialogContent>
-    </Dialog></div>
+          <DialogTrigger asChild>
+            <Button className='w-[50vw]'>Upload</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <div><Label>Enter Title</Label>
+              <Input type='text' placeholder="title" value={video.title}
+                onChange={(e) => setVideo({ ...video, title: e.target.value })} /></div>
+            <div><Label>Enter Description</Label>
+              <Textarea placeholder="Type your Description here." value={video.description}
+                onChange={(e) => setVideo({ ...video, description: e.target.value })} /></div>
+            <div><Label>Upload Thumbnail</Label>
+              <Progress value={tprogress} className=' my-2' />
+              <div className='flex'><Input type='file' onChange={(e) => {
+                setThumbnail(e.target.files?.[0])
+              }} /><Button onClick={async () => {
+                if (thumbnail) {
+                  const res = await edgestore.publicFiles.upload({
+                    file: thumbnail,
+                    onProgressChange: (progress) => {
+                      setTprogress(progress)
+                    }
+                  })
+
+                  toast.success("thumbnail uploaded succesfully!")
+
+                  const updatedVideo = { ...video, thumbnail: res.url };
+                  setVideo(updatedVideo);
+
+                  console.log(res.url)
+                  console.log(video)
+
+                }
+              }}>Confirm</Button></div></div>
+            <div><Label>Upload Video</Label>
+              <Progress value={progress} className=' my-2' />
+              <div className='flex'><Input type='file' onChange={(e) => {
+                setFile(e.target.files?.[0])
+              }} /><Button onClick={async () => {
+                if (file) {
+                  const res = await edgestore.publicFiles.upload({
+                    file,
+                    onProgressChange: (progress) => {
+                      setProgress(progress)
+                    }
+                  })
+
+                  toast.success("Ready to upload")
+
+                  const updatedVideo = { ...video, url: res.url };
+                  setVideo(updatedVideo);
+
+                  console.log(res.url)
+                  console.log(video)
+
+                }
+              }}>confirm</Button></div></div>
+            <Button type='submit' onClick={onUpload}>Submit</Button>
+          </DialogContent>
+        </Dialog></div>
 
 
         <div className='text-foreground  h-[90vh] flex flex-col items-center w-full p-6   '>
@@ -48,7 +164,7 @@ const page = () => {
           <div className='flex flex-col  items-start p-5 border-border border-2 gap-2  '>
             <h4 className=''>Manas Parauha</h4>
             <div className='w-full flex justify-center items-center'>
-              <video height={300} width={300} controls src="https://videos.pexels.com/video-files/26214359/11939615_640_360_25fps.mp4"></video></div>
+              <video height={300} width={300} controls src={data[0]?.url}></video></div>
             <div className='flex flex-col gap-2'>
 
               <h4>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloribus, debitis!
@@ -65,7 +181,7 @@ const page = () => {
         </div>
 
       </div>
-      
+
 
       <Navbar />
     </div>
