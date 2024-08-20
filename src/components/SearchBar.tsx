@@ -9,7 +9,7 @@ const SearchBar = () => {
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const {replace} = useRouter();
+  const { replace } = useRouter();
 
   const handleSearch = (searchTerm : string) =>{
     const params = new URLSearchParams(searchParams);

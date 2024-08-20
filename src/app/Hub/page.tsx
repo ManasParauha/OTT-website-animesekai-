@@ -6,18 +6,41 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import SendIcon from '@mui/icons-material/Send';
 import NavbarMD from '@/components/NavbarMD';
 import Navbar from '@/components/Navbar';
+import { Textarea } from '@/components/ui/textarea';
+
+
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 
 const page = () => {
   return (
+
     <div className='flex'>
       <NavbarMD />
       <div className='h-screen w-screen flex-col  overflow-y-auto flex py-5 gap-2'>
 
-
-
-
-        <div className=' h-[10vh] flex justify-center  '><Button className='w-[50vw]'>Upload</Button></div>
+        <div className=' h-[10vh] flex justify-center  '> <Dialog>
+      <DialogTrigger asChild>
+      <Button className='w-[50vw]'>Upload</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+           <div><Label>Enter Title</Label>
+           <Input type='text' /></div>
+           <div><Label>Enter Description</Label>
+           <Textarea placeholder="Type your Description here." /></div>
+           <div><Label>Upload Thumbnail</Label>
+           <div className='flex'><Input type='file' /><Button>Confirm</Button></div></div>
+           <div><Label>Upload Video</Label>
+           <div className='flex'><Input type='file' /><Button>confirm</Button></div></div>
+           <Button type='submit'>Submit</Button>
+      </DialogContent>
+    </Dialog></div>
 
 
         <div className='text-foreground  h-[90vh] flex flex-col items-center w-full p-6   '>
@@ -42,8 +65,11 @@ const page = () => {
         </div>
 
       </div>
+      
+
       <Navbar />
     </div>
+
   )
 }
 
