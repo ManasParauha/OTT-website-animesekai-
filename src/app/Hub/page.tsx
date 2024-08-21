@@ -11,7 +11,7 @@ import { useEdgeStore } from '@/lib/edgestore'
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useEffect } from 'react';
-
+import Image from 'next/image';
 
 import {
   Dialog,
@@ -61,7 +61,8 @@ const page = () => {
   {title:string,
   description:string,
   thumbnail:string,
-  url:string
+  url:string,
+  user:object
   }[]>([])
 
 
@@ -72,6 +73,7 @@ const page = () => {
         const res = await axios.get('/api/users/hubList');
       // console.log(res.data.data);
       setData(res.data.data)
+    
       } catch (error:any) {
         console.log("video fetching failed",error.message);
         toast.error(error.message);
@@ -90,7 +92,7 @@ const page = () => {
   }, []);
 
 
-
+  console.log(data)
 
   return (
     <div className='flex'>
@@ -162,13 +164,13 @@ const page = () => {
         <div className='text-foreground  h-[90vh] flex flex-col items-center w-full p-6   '>
 
           <div className='flex flex-col  items-start p-5 border-border border-2 gap-2  '>
-            <h4 className=''>Manas Parauha</h4>
+            <h4 className=''>{data[0]?.user.username}</h4>
+            <Image src={data[0]?.user.photo} alt='photo' height={20} width={20}/>
             <div className='w-full flex justify-center items-center'>
               <video height={300} width={300} controls src={data[0]?.url}></video></div>
             <div className='flex flex-col gap-2'>
 
-              <h4>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloribus, debitis!
-              </h4>
+              <h4>{data[0]?.description}</h4>
               <div className='flex gap-5 justify-start w-full '>
                 <FavoriteBorderIcon />
                 <ChatBubbleOutlineIcon />

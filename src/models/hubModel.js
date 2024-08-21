@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 
 const hubSchema = new mongoose.Schema({
@@ -18,6 +19,11 @@ const hubSchema = new mongoose.Schema({
     url:{
         type:String,
         required:true,
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'users',
+        required:true
     }
 })
 
