@@ -21,6 +21,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Progress } from '@/components/ui/progress';
+import { useRouter } from 'next/navigation';
+import SearchBar from '@/components/SearchBar';
 
 
 const page = () => {
@@ -56,14 +58,22 @@ const page = () => {
   }
 
 
+
+  interface User {
+    username: string;
+    photo: string;
+  }
+
+  interface HubData {
+    title: string;
+    description: string;
+    thumbnail: string;
+    url: string;
+    user: User;
+  }
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<
-  {title:string,
-  description:string,
-  thumbnail:string,
-  url:string,
-  user:object
-  }[]>([])
+  const [data, setData] = React.useState<HubData[]>([]);
 
 
   useEffect(() => {
@@ -71,14 +81,14 @@ const page = () => {
       try {
         setIsLoading(true);
         const res = await axios.get('/api/users/hubList');
-      // console.log(res.data.data);
-      setData(res.data.data)
-    
-      } catch (error:any) {
-        console.log("video fetching failed",error.message);
+        // console.log(res.data.data);
+        setData(res.data.data)
+
+      } catch (error: any) {
+        console.log("video fetching failed", error.message);
         toast.error(error.message);
       }
-      finally{
+      finally {
         setIsLoading(false);
       }
 
@@ -92,12 +102,17 @@ const page = () => {
   }, []);
 
 
-  console.log(data)
+
+  const router = useRouter();
+
+
+
+
 
   return (
     <div className='flex'>
       <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div>
-      <div className='h-screen w-screen flex-col  overflow-y-auto flex py-5 gap-2'>
+      <div className='h-screen w-screen flex-col  overflow-y-auto flex py-5 gap-2 items-center'>
 
         <div className=' h-[10vh] flex justify-center  '> <Dialog>
           <DialogTrigger asChild>
@@ -158,14 +173,23 @@ const page = () => {
               }}>confirm</Button></div></div>
             <Button type='submit' onClick={onUpload}>Submit</Button>
           </DialogContent>
-        </Dialog></div>
+        </Dialog>
+        </div>
+
+
+        <SearchBar/>
+
+
 
 
         <div className='text-foreground  h-[90vh] flex flex-col items-center w-full p-6   '>
 
           <div className='flex flex-col  items-start p-5 border-border border-2 gap-2  '>
-            <h4 className=''>{data[0]?.user.username}</h4>
-            <Image src={data[0]?.user.photo} alt='photo' height={20} width={20}/>
+            <div className='flex items-center gap-2'>
+              <Image src={data[0]?.user.photo} alt='photo' height={30} width={30} className='rounded-full' />
+              <h4 className=''>{data[0]?.user.username}</h4>
+            </div>
+            <h4>{data[0]?.title}</h4>
             <div className='w-full flex justify-center items-center'>
               <video height={300} width={300} controls src={data[0]?.url}></video></div>
             <div className='flex flex-col gap-2'>

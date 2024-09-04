@@ -17,8 +17,9 @@ const page = ({
 }:{
 searchParams:{
       title:string,
+      seriesTitle?:string,
       description:string,
-      episode?:number,
+      episodeNo?:number,
       url:string,
       thumbnail:string
 }}
@@ -36,8 +37,8 @@ searchParams:{
                 <div className='flex gap-2 mt-3 w-full md:ml-28'>
                     <Image src={searchParams.thumbnail || poster} width={70} height={70} alt='Thumbnail' className='h-20 w-28'/>
                     <div className='flex gap-1 flex-col '>
-                        <h6 className='text-foreground text-2xl font-semibold'>{searchParams.title}</h6>
-                        <p className='text-muted-foreground text-sm'>Episode - {searchParams.episode}</p>
+                        <h6 className='text-foreground text-2xl font-semibold'>{searchParams.title || searchParams.seriesTitle}</h6>
+                       {searchParams.episodeNo &&  <p className='text-muted-foreground text-sm'>Episode - {Number(searchParams.episodeNo) + 1} </p>}
                     </div>
 
                 </div>

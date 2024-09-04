@@ -33,11 +33,10 @@ const TopSeries = () => {
   // const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [data, setData] = React.useState<
-  {title:string,
-  description:string,
-  thumbnail:string,
-  episode:[],
-  
+  {seriesTitle:string,
+    thumbnail:string,
+    episodeNo:number,
+    url:string,
   }[]>([])
 
 
@@ -45,9 +44,9 @@ const TopSeries = () => {
     const seriesDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get('/api/admin/fetchSeriesHome');
+        const res = await axios.get('/api/admin/fetchSeriesHome1');
       // console.log(res.data.data);
-      setData(res.data.data)
+      setData(res.data)
       } catch (error:any) {
         console.log("video fetching failed",error.message);
         toast.error(error.message);
@@ -64,8 +63,7 @@ const TopSeries = () => {
 
 
   }, []);
-
-  console.log(data)
+ 
 
 
 
@@ -84,7 +82,7 @@ const TopSeries = () => {
         
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={data[0]?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
-          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data[0]?.title || "title"}</p>
+          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data[0]?.seriesTitle || "title"}</p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'> <Link href={
             {
               pathname:'/Player',
@@ -95,7 +93,7 @@ const TopSeries = () => {
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={data[1]?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
-          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data[1]?.title || "title"}</p>
+          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data[1]?.seriesTitle  || "title"}</p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><Link href={
             {
               pathname:'/Player',
@@ -106,7 +104,7 @@ const TopSeries = () => {
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={data[2]?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
-          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data[2]?.title || "title"}</p>
+          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data[2]?.seriesTitle || "title"}</p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><Link href={
             {
               pathname:'/Player',
