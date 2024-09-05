@@ -1,4 +1,5 @@
-"use client"; // Ensure this is at the top for client-side rendering
+"use client"; // Ensure this is set at the top
+
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -17,12 +18,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useRouter } from "next/navigation";
-import SearchBar from "@/components/SearchBar";
+import dynamic from "next/dynamic"; // Import dynamic to handle client-side-only components
 
-// Define interfaces or types outside the component for clarity
+// Lazy load components that may cause SSR issues
+const SearchBar = dynamic(() => import("@/components/SearchBar"), { ssr: false });
+
 interface User {
   username: string;
   photo: string;
@@ -51,12 +54,11 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<HubData[]>([]);
 
-  // Use EdgeStore correctly
-  const { edgestore } = useEdgeStore() || {};
+  // Prevent accessing undefined during server-side rendering
+  const { edgestore } = typeof window !== "undefined" ? useEdgeStore() : { edgestore: null };
 
-  const router = useRouter();
+  const router = typeof window !== "undefined" ? useRouter() : null;
 
-  // Upload video to server
   const onUpload = async () => {
     try {
       const response = await axios.post("/api/users/uploadHub", video);
@@ -69,7 +71,6 @@ const Page = () => {
     }
   };
 
-  // Fetch Hub data on component mount
   useEffect(() => {
     const hubDetails = async () => {
       try {
@@ -84,7 +85,10 @@ const Page = () => {
       }
     };
 
-    hubDetails();
+    // Fetch data only on the client
+    if (typeof window !== "undefined") {
+      hubDetails();
+    }
   }, []);
 
   return (
@@ -167,6 +171,7 @@ const Page = () => {
           </Dialog>
         </div>
 
+        {/* Lazy loaded SearchBar to prevent SSR issues */}
         <SearchBar />
 
         <div className="text-foreground h-[90vh] flex flex-col items-center w-full p-6">
