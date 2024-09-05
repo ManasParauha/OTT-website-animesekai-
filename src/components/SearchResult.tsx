@@ -27,7 +27,7 @@ const SearchResult = ({ query }: { query: string }) => {
                 setIsLoading(true);
                 const res = await axios.get('/api/admin/fetchMoviesHome');
                 const res1 = await axios.get('/api/admin/fetchSeriesHome');
-                // console.log(res.data.data);
+                // console.log(res.data.data)
                 setData([...res.data.data, ...res1.data.data]);
 
 
@@ -65,7 +65,7 @@ const SearchResult = ({ query }: { query: string }) => {
 
                     
                         <div key={index} className='group relative flex justify-center h-40 w-60'>
-                            <Image src={item.thumbnail} alt='poster'
+                            <Image src={item.thumbnail || poster} alt='poster'
                                 height={400} width={600} className='min-h-40 min-w-60' />
 
                             <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{item.title}</p>

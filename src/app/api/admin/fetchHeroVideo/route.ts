@@ -11,6 +11,12 @@ export async function GET(request:NextRequest){
     try {
         
         const video = await Movie.findOne({}).select("-password");
+        
+        // const video = await Movie.aggregate([
+        //     { $sample: { size: 1 } }, // Select one random document
+        //     { $project: { password: 0 } } // Exclude the password field
+        //   ]);
+
         return NextResponse.json({
             mesaaage: "Movie found",
             data: video
