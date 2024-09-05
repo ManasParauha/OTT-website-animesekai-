@@ -39,7 +39,7 @@ const page = () => {
 
   const [progress, setProgress] = React.useState(0)
 
-  const { edgestore } = useEdgeStore();
+  const { edgestore } = useEdgeStore() || {};
 
   const onUpload = async () => {
 
@@ -84,11 +84,11 @@ const page = () => {
         setIsLoading(true);
         const res = await axios.get('/api/users/hubList');
         // console.log(res.data.data);
-        setData(res.data.data)
+        setData(res.data.data || []);
 
       } catch (error: any) {
-        console.log("video fetching failed", error.message);
-        toast.error(error.message);
+        console.log("video fetching failed", error.message || "error");
+        toast.error(error.message || "Fetching Failed");
       }
       finally {
         setIsLoading(false);
@@ -105,7 +105,7 @@ const page = () => {
 
 
 
-  const router = useRouter();
+  const router = typeof window !== "undefined" ? useRouter() : null;
 
 
 
