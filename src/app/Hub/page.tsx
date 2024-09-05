@@ -48,7 +48,9 @@ const page = () => {
       const response = await axios.post("/api/users/uploadHub", video)
       console.log("Upload success", response.data)
       toast.success("Uploaded Succesful");
-      window.location.reload();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
 
 
     } catch (error: any) {
