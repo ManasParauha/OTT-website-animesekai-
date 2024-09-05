@@ -186,7 +186,8 @@ const page = () => {
 
         <div className='text-foreground  h-[90vh] flex flex-col items-center w-full p-6   '>
 
-          <div className='flex flex-col  items-start p-5 border-border border-2 gap-2  '>
+          {data.length > 0 && (
+            <div className='flex flex-col  items-start p-5 border-border border-2 gap-2  '>
             <div className='flex items-center gap-2'>
               <Image src={data[0]?.user.photo} alt='photo' height={30} width={30} className='rounded-full' />
               <h4 className=''>{data[0]?.user.username}</h4>
@@ -205,6 +206,7 @@ const page = () => {
 
             </div>
           </div>
+          )}
 
         </div>
 
