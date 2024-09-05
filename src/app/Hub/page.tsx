@@ -1,24 +1,28 @@
-"use client";
-import React, { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import SendIcon from '@mui/icons-material/Send';
-import NavbarMD from '@/components/NavbarMD';
-import Navbar from '@/components/Navbar';
-import { Textarea } from '@/components/ui/textarea';
-import { useEdgeStore } from '@/lib/edgestore';
-import toast from 'react-hot-toast';
-import axios from 'axios';
-import Image from 'next/image';
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+"use client"; // Ensure this is at the top for client-side rendering
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import SendIcon from "@mui/icons-material/Send";
+import NavbarMD from "@/components/NavbarMD";
+import Navbar from "@/components/Navbar";
+import { Textarea } from "@/components/ui/textarea";
+import { useEdgeStore } from "@/lib/edgestore";
+import toast from "react-hot-toast";
+import axios from "axios";
+import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from '@/components/ui/progress';
-import { useRouter } from 'next/navigation';
-import SearchBar from '@/components/SearchBar';
+import { Progress } from "@/components/ui/progress";
+import { useRouter } from "next/navigation";
+import SearchBar from "@/components/SearchBar";
 
-// Define the HubData interface
+// Define interfaces or types outside the component for clarity
 interface User {
   username: string;
   photo: string;
@@ -33,46 +37,47 @@ interface HubData {
 }
 
 const Page = () => {
-  const [video, setVideo] = React.useState({
+  const [video, setVideo] = useState({
     title: "",
     description: "",
     url: "",
-    thumbnail: ""
+    thumbnail: "",
   });
 
-  const [file, setFile] = React.useState<File>();
-  const [thumbnail, setThumbnail] = React.useState<File>();
-  const [tprogress, setTprogress] = React.useState(0);
-  const [progress, setProgress] = React.useState(0);
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<HubData[]>([]);
-  const { edgestore } = typeof window !== 'undefined' ? useEdgeStore() : { edgestore: null };
+  const [file, setFile] = useState<File | null>(null);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [tprogress, setTprogress] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [data, setData] = useState<HubData[]>([]);
 
-  // Ensure the router hook is used only on the client side
-  const router = typeof window !== 'undefined' ? useRouter() : null;
+  // Use EdgeStore correctly
+  const { edgestore } = useEdgeStore() || {};
 
+  const router = useRouter();
+
+  // Upload video to server
   const onUpload = async () => {
     try {
       const response = await axios.post("/api/users/uploadHub", video);
       console.log("Upload success", response.data);
       toast.success("Uploaded Successfully");
-      if (typeof window !== "undefined") {
-        window.location.reload();
-      }
+      window.location.reload();
     } catch (error: any) {
       console.log("Upload failed!", error);
       toast.error(error.message || "Upload failed!");
     }
   };
 
+  // Fetch Hub data on component mount
   useEffect(() => {
     const hubDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get('/api/users/hubList');
+        const res = await axios.get("/api/users/hubList");
         setData(res.data.data || []);
       } catch (error: any) {
-        console.log("Video fetching failed", error.message || "error");
+        console.log("Fetching failed", error.message || "error");
         toast.error(error.message || "Fetching failed");
       } finally {
         setIsLoading(false);
@@ -99,27 +104,31 @@ const Page = () => {
                 type="text"
                 placeholder="Title"
                 value={video.title}
-                onChange={(e) => setVideo({ ...video, title: e.target.value })}
+                onChange={(e) =>
+                  setVideo({ ...video, title: e.target.value })
+                }
               />
               <Label>Enter Description</Label>
               <Textarea
                 placeholder="Type your description here."
                 value={video.description}
-                onChange={(e) => setVideo({ ...video, description: e.target.value })}
+                onChange={(e) =>
+                  setVideo({ ...video, description: e.target.value })
+                }
               />
               <Label>Upload Thumbnail</Label>
               <Progress value={tprogress} className="my-2" />
               <div className="flex">
                 <Input
                   type="file"
-                  onChange={(e) => setThumbnail(e.target.files?.[0])}
+                  onChange={(e) => setThumbnail(e.target.files?.[0] || null)}
                 />
                 <Button
                   onClick={async () => {
                     if (thumbnail && edgestore) {
                       const res = await edgestore.publicFiles.upload({
                         file: thumbnail,
-                        onProgressChange: (progress) => setTprogress(progress),
+                        onProgressChange: setTprogress,
                       });
                       toast.success("Thumbnail uploaded successfully!");
                       setVideo((prev) => ({ ...prev, thumbnail: res.url }));
@@ -134,14 +143,14 @@ const Page = () => {
               <div className="flex">
                 <Input
                   type="file"
-                  onChange={(e) => setFile(e.target.files?.[0])}
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
                 />
                 <Button
                   onClick={async () => {
                     if (file && edgestore) {
                       const res = await edgestore.publicFiles.upload({
                         file,
-                        onProgressChange: (progress) => setProgress(progress),
+                        onProgressChange: setProgress,
                       });
                       toast.success("Ready to upload");
                       setVideo((prev) => ({ ...prev, url: res.url }));
@@ -177,7 +186,7 @@ const Page = () => {
               </div>
               <h4>{data[0]?.title}</h4>
               <div className="w-full flex justify-center items-center">
-                <video height={300} width={300} controls src={data[0]?.url}></video>
+                <video height={300} width={300} controls src={data[0]?.url} />
               </div>
               <div className="flex flex-col gap-2">
                 <h4>{data[0]?.description}</h4>
