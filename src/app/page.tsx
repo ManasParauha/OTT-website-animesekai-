@@ -53,7 +53,7 @@ export default function Home() {
           <TopMovies />
 
 
-          
+          <Navbar />
           <div className="h-20 md:h-0"></div>
 
 

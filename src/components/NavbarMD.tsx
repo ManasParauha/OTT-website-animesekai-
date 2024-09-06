@@ -149,10 +149,16 @@ const NavbarMD = () => {
       <ul className='flex flex-col gap-12'>
 
         <Link href="/search"><li className='flex gap-6 font-semibold'><SearchIcon /><p className=' transition hidden group-hover:block cursor-pointer'>Search</p></li></Link>
+
         <Link href="/"><li className='flex gap-6 font-semibold '><HomeIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Home</p></li></Link>
+
         <Link href="/Hub"><li className='flex gap-6 font-semibold '><AddCircleIcon/> <p className=' transition hidden group-hover:block cursor-pointer'>Hub</p></li></Link>
-        <li className='flex gap-6 font-semibold' ><TvIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Series</p></li>
-        <li className='flex gap-6 font-semibold'><MovieCreationIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Movies</p></li>
+
+        <Link href="/Series"><li className='flex gap-6 font-semibold' ><TvIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Series</p></li></Link>
+
+        <Link href="/Movies"><li className='flex gap-6 font-semibold'><MovieCreationIcon /> <p className=' transition hidden group-hover:block cursor-pointer'>Movies</p></li></Link>
+
+
       </ul>
 
       <Button onClick={logout} ><LogoutIcon /><p className='transition hidden group-hover:block'>Logout</p></Button>

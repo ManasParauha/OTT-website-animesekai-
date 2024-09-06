@@ -28,9 +28,9 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <div className=" w-full relative  flex flex-col overflow-x-hidden">
+        <div className=" w-full relative  flex flex-col overflow-x-hidden  ">
 
-          <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div>
+          <div className="fixed hidden md:block left-0 top-0 z-10 "><NavbarMD /></div>
 
           <LogoUser />
 

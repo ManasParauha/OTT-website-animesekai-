@@ -89,7 +89,7 @@ const TopSeries = () => {
               query:data[0]
             }
           }> <PlayArrowIcon /> Play Now</Link></Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={data[1]?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
@@ -100,7 +100,7 @@ const TopSeries = () => {
               query:data[1]
             }
           }> <PlayArrowIcon /> Play Now</Link></Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={data[2]?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
@@ -111,43 +111,43 @@ const TopSeries = () => {
               query:data[2]
             }
           }> <PlayArrowIcon /> Play Now</Link></Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'> </p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><PlayArrowIcon />Play Now</Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'></p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><PlayArrowIcon />Play Now</Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'></p>
           <Button  className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><PlayArrowIcon />Play Now</Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'></p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><PlayArrowIcon />Play Now</Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'></p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><PlayArrowIcon />Play Now</Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
           <Image src={poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'></p>
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><PlayArrowIcon />Play Now</Button>
-          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
 
 

@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -88,7 +88,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex ">
 
       {/* <div className="fixed hidden md:block left-0 top-0 z-10">
         <NavbarMD />
@@ -169,7 +169,7 @@ const Page = () => {
           </Dialog>
         </div>
 
-        
+
 
         <div className="text-foreground h-[90vh] flex flex-col items-center w-full p-6">
           {data.length > 0 && (

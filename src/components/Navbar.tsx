@@ -8,11 +8,16 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 const Navbar = () => {
   return (
     <nav className='fixed md:hidden bottom-0 left-0 w-full h-20 bg-background flex justify-around items-center'>
+
        <Link href="/"> <HomeIcon/></Link>
+
         <Link href="/search"><SearchIcon/></Link>
+
         <Link href="/Hub"><AddCircleIcon/></Link>
-        <TvIcon/>
-        <MovieCreationIcon/>
+
+        <Link href="/Series"><TvIcon/></Link>
+
+        <Link href="/Movies"><MovieCreationIcon/></Link>
     </nav>
   )
 }
