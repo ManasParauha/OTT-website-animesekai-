@@ -173,7 +173,7 @@ const Page = () => {
 
         <div className="text-foreground h-[90vh] flex flex-col items-center w-full p-6">
           {data.length > 0 && (
-            <div className="flex flex-col items-start p-5 border-border border-2 gap-2">
+            <div className="flex flex-col items-start p-5 border-border border-2 gap-2 w-96">
               <div className="flex items-center gap-2">
                 {data[0]?.user?.photo && (
                   <Image
@@ -188,10 +188,10 @@ const Page = () => {
               </div>
               <h4>{data[0]?.title}</h4>
               <div className="w-full flex justify-center items-center">
-                <video height={300} width={300} controls src={data[0]?.url} />
+                <video autoPlay={true} height={300} width={300} controls src={data[0]?.url} />
               </div>
               <div className="flex flex-col gap-2">
-                <h4>{data[0]?.description}</h4>
+                <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-80 ">{data[0]?.description}</h4>
                 <div className="flex gap-5 justify-start w-full">
                   <FavoriteBorderIcon />
                   <ChatBubbleOutlineIcon />

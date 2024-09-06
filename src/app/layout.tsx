@@ -7,6 +7,7 @@ import { EdgeStoreProvider } from '../lib/edgestore';
 import NavbarMD from "@/components/NavbarMD";
 import LogoUser from "@/components/LogoUser";
 import Navbar from "@/components/Navbar";
+import ConditionalComponent from "@/components/ConditionalComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
+  
+
+
+
+
   return (
     <html lang="en">
       <body className={inter.className}> <EdgeStoreProvider><ThemeProvider
@@ -30,15 +39,12 @@ export default function RootLayout({
       >
         <div className=" w-full relative  flex flex-col overflow-x-hidden  ">
 
-          <div className="fixed hidden md:block left-0 top-0 z-10 "><NavbarMD /></div>
-
-          <LogoUser />
+          <ConditionalComponent/>
 
           {children}
 
-          <Navbar />
 
-          </div>
+        </div>
 
         <Toaster
           position="top-center"
