@@ -7,7 +7,7 @@ import Link from 'next/link';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 const Navbar = () => {
   return (
-    <nav className='fixed md:hidden bottom-0 left-0 w-full h-20 bg-background flex justify-around items-center'>
+    <nav className='fixed md:hidden bottom-0 left-0 w-full h-20 bg-background flex justify-around items-center z-10'>
 
        <Link href="/"> <HomeIcon/></Link>
 

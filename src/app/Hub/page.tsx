@@ -88,7 +88,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex p-5  ">
+    <div className="flex p-5 pb-10 ">
 
       {/* <div className="fixed hidden md:block left-0 top-0 z-10">
         <NavbarMD />
@@ -175,7 +175,7 @@ const Page = () => {
           {data.map(  (data) => (
             
           
-           <div className="flex flex-col items-start p-5 border-border border-2 gap-5 w-96">
+           <div className="flex flex-col items-start p-5 border-border border-2 gap-5 w-72">
               <div className="flex items-center gap-2">
                 {data.user?.photo && (
                   <Image
@@ -193,7 +193,7 @@ const Page = () => {
                 <video  height={300} width={300} controls src={data?.url} />
               </div>
               <div className="flex flex-col gap-2">
-                <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-80 ">{data?.description}</h4>
+                <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-60 ">{data?.description}</h4>
                 <div className="flex gap-5 justify-start w-full">
                   <FavoriteBorderIcon />
                   <ChatBubbleOutlineIcon />
