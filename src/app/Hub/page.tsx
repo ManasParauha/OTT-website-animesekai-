@@ -88,7 +88,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex ">
+    <div className="flex p-5  ">
 
       {/* <div className="fixed hidden md:block left-0 top-0 z-10">
         <NavbarMD />
@@ -171,27 +171,29 @@ const Page = () => {
 
 
 
-        <div className="text-foreground h-[90vh] flex flex-col items-center w-full p-6">
-          {data.length > 0 && (
-            <div className="flex flex-col items-start p-5 border-border border-2 gap-2 w-96">
+        <div className="text-foreground h-[90vh] flex flex-col gap-5 items-center w-full p-6">
+          {data.map(  (data) => (
+            
+          
+           <div className="flex flex-col items-start p-5 border-border border-2 gap-5 w-96">
               <div className="flex items-center gap-2">
-                {data[0]?.user?.photo && (
+                {data.user?.photo && (
                   <Image
-                    src={data[0].user.photo}
+                    src={data.user.photo}
                     alt="photo"
                     height={30}
                     width={30}
                     className="rounded-full"
                   />
                 )}
-                <h4>{data[0]?.user?.username}</h4>
+                <h4>{data?.user?.username}</h4>
               </div>
-              <h4>{data[0]?.title}</h4>
+              <h4>{data?.title}</h4>
               <div className="w-full flex justify-center items-center">
-                <video autoPlay={true} height={300} width={300} controls src={data[0]?.url} />
+                <video  height={300} width={300} controls src={data?.url} />
               </div>
               <div className="flex flex-col gap-2">
-                <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-80 ">{data[0]?.description}</h4>
+                <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-80 ">{data?.description}</h4>
                 <div className="flex gap-5 justify-start w-full">
                   <FavoriteBorderIcon />
                   <ChatBubbleOutlineIcon />
@@ -199,7 +201,7 @@ const Page = () => {
                 </div>
               </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
 
