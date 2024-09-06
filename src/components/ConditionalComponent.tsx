@@ -6,7 +6,7 @@ import NavbarMD from './NavbarMD';
 import LogoUser from './LogoUser';
 import Navbar from './Navbar';
 
-const excludedRoutes = ['/Login', '/SignUp'];
+const excludedRoutes = ['/Login', '/Signup'];
 
 const ConditionalComponents: React.FC = () => {
   const currentPath = usePathname();
