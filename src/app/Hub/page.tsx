@@ -1,12 +1,10 @@
-"use client"; // Ensure this is set at the top
+"use client"; 
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import SendIcon from "@mui/icons-material/Send";
-import NavbarMD from "@/components/NavbarMD";
-import Navbar from "@/components/Navbar";
 import { Textarea } from "@/components/ui/textarea";
 import { useEdgeStore } from "@/lib/edgestore";
 import toast from "react-hot-toast";
@@ -21,10 +19,8 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import dynamic from "next/dynamic"; // Import dynamic to handle client-side-only components
 
-// Lazy load components that may cause SSR issues
-const SearchBar = dynamic(() => import("@/components/SearchBar"), { ssr: false });
+
 
 interface User {
   username: string;
@@ -93,9 +89,11 @@ const Page = () => {
 
   return (
     <div className="flex">
-      <div className="fixed hidden md:block left-0 top-0 z-10">
+
+      {/* <div className="fixed hidden md:block left-0 top-0 z-10">
         <NavbarMD />
-      </div>
+      </div> */}
+
       <div className="h-screen w-screen flex-col overflow-y-auto flex py-5 gap-2 items-center">
         <div className="h-[10vh] flex justify-center">
           <Dialog>
@@ -171,8 +169,7 @@ const Page = () => {
           </Dialog>
         </div>
 
-        {/* Lazy loaded SearchBar to prevent SSR issues */}
-        <SearchBar />
+        
 
         <div className="text-foreground h-[90vh] flex flex-col items-center w-full p-6">
           {data.length > 0 && (
@@ -206,7 +203,8 @@ const Page = () => {
         </div>
       </div>
 
-      <Navbar />
+      {/* <Navbar /> */}
+
     </div>
   );
 };

@@ -20,13 +20,19 @@ const page = (
 
   return (
     <div className='flex w-full'>
-       <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div>
+
+       {/* <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div> */}
+
       <div className='md:ml-24'>
-        <LogoUser/>
+
+        {/* <LogoUser/> */}
+
       <SearchBar/>
       <SearchResult query={query}/>
       <div className=' h-24'></div>
-      <Navbar/>
+
+      {/* <Navbar/> */}
+      
       </div>
       
     </div>

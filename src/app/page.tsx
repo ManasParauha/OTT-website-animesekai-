@@ -43,15 +43,17 @@ export default function Home() {
     <main className="w-[100%]">
 
       <div className="w-full flex">
-        <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div>
+
+        {/* <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div> */}
+
         <div className="w-full relative md:ml-24 flex flex-col overflow-x-hidden">
-          <LogoUser />
+          
           <HeroSection />
           <TopSeries/>
           <TopMovies />
 
 
-          <Navbar />
+          
           <div className="h-20 md:h-0"></div>
 
 

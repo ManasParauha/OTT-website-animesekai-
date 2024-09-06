@@ -1,8 +1,5 @@
 "use client"
 import React from 'react'
-import NavbarMD from "@/components/NavbarMD";
-import Navbar from "@/components/Navbar";
-import LogoUser from "@/components/LogoUser";
 import Image from 'next/image';
 import poster from '../../../public/blur.jpg'
 
@@ -30,9 +27,11 @@ searchParams:{
     return (
         <div className='flex bg-background'>
 
-            <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div>
+            {/* <div className="fixed hidden md:block left-0 top-0 z-10"><NavbarMD /></div> */}
+
             <div className="w-full relative md:ml-32 flex flex-col overflow-x-hidden items-center ">
-                <LogoUser />
+              
+                {/* <LogoUser /> */}
                 
                 <video controls src={searchParams.url} className=' object-fill w-full h-[40vh]  sm:h-[50vh] md:w-[80vw] md:h-[70vh]  md:mt-10 sm:mt-16 mt-20 '></video>
 
@@ -46,7 +45,8 @@ searchParams:{
                 </div>
 
 
-                <Navbar />
+                {/* <Navbar /> */}
+
                 <div className="h-20 md:h-0"></div>
 
 
