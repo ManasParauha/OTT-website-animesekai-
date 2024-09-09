@@ -21,6 +21,7 @@ const Series = () => {
   }
   
   interface Series {
+    _id: string;
     title: string;
     description: string;
     thumbnail: string;
@@ -71,13 +72,7 @@ const serializedData = JSON.stringify(data);
 
           <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'>
 
-            <Link href={
-              {
-                pathname: '/Player',
-                query: data.title
-
-              }
-            }> <PlayArrowIcon /> Play Now</Link>
+            <Link href ={`/Series/${data._id}`}> <PlayArrowIcon />Open</Link>
 
           </Button>
 

@@ -1,4 +1,5 @@
 
+"use client";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -6,6 +7,8 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import TopSeries from "@/components/TopSeries";
 import TopMovies from "@/components/TopMovies";
+
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
@@ -23,6 +26,19 @@ export default function Home() {
 
   //   }
   // }
+
+  const [data, setData] = useState<string>("");
+  useEffect(() => {
+    const userDetails = async () => {
+        const res = await axios.get('/api/users/me');
+        console.log(res.data);
+        setData(res.data.data._id)
+    }
+
+    userDetails()
+
+    
+  }, []);
   return (
 
     // <main className="flex flex-col md:flex-row">
@@ -45,6 +61,7 @@ export default function Home() {
         <div className="w-full relative md:ml-24 flex flex-col overflow-x-hidden">
           
           <HeroSection />
+         
           <TopSeries/>
           <TopMovies />
 

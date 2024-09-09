@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 
 
 
+
 // interface DataItem {
 //   title: string;
 //   description: string;
@@ -38,6 +39,7 @@ const TopSeries = () => {
     thumbnail:string,
     episodeNo:number,
     url:string,
+    _id:string
   }[]>([])
 
 
@@ -64,6 +66,7 @@ const TopSeries = () => {
 
 
   }, []);
+   
  
 
 
@@ -90,6 +93,7 @@ const TopSeries = () => {
               query:data[0]
             }
           }> <PlayArrowIcon /> Play Now</Link></Button>
+          
           <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
         </div>
         <div className='group relative flex justify-center h-40 w-60 '>
