@@ -222,7 +222,7 @@ const Page = () => {
               <div className="w-full flex justify-center items-center">
                 <video  height={300} width={700} controls src={data?.url} />
               </div>
-              <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-full ">{data?.description}</h4>
+              <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis md:text-balance  w-full ">{data?.description}</h4>
               <div className="flex flex-col  gap-2 w-full">
                 
                 <div className="flex gap-5  w-full">
