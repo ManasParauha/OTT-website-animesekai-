@@ -43,11 +43,11 @@ const Comments = ({ hubId }: { hubId: string }) => {
             {error && <p className="text-red-500 bg-background text-foreground">{error}</p>}
             <div className="flex flex-col gap-3">
                 {comments.map((comment) => (
-                    <div key={comment._id} className="flex items-center gap-8   bg-background text-foreground">
+                    <div key={comment._id} className="flex items-center gap-3 md:gap-8   bg-background text-foreground">
                         <UserProfile userId={comment.userId} />
                         <div>
-                        <p className=" font-normal text-base">{comment.content}</p>
-                        <p className=" font-thin text-xs">{new Date(comment.createdAt).toLocaleString()}</p>
+                        <p className=" font-normal text-[0.5rem] md:text-base">{comment.content}</p>
+                        <p className=" font-thin text-[0.4rem] md:text-xs">{new Date(comment.createdAt).toLocaleString()}</p>
                         </div>
                     </div>
                 ))}
