@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import UserProfile from './UserProfile';
 
 interface Comment {
     _id: string;
@@ -10,6 +11,8 @@ interface Comment {
     userId: string;
     createdAt: string;
 }
+
+
 
 const Comments = ({ hubId }: { hubId: string }) => {
     const [comments, setComments] = useState<Comment[]>([]);
@@ -33,14 +36,19 @@ const Comments = ({ hubId }: { hubId: string }) => {
         fetchComments();
     }, [hubId]);
 
+    
+
     return (
         <div className="flex gap-2 flex-col ">
             {error && <p className="text-red-500 bg-background text-foreground">{error}</p>}
             <div className="flex flex-col gap-3">
                 {comments.map((comment) => (
-                    <div key={comment._id} className="flex flex-col bg-background text-foreground">
+                    <div key={comment._id} className="flex items-center gap-8   bg-background text-foreground">
+                        <UserProfile userId={comment.userId} />
+                        <div>
                         <p className=" font-normal text-base">{comment.content}</p>
                         <p className=" font-thin text-xs">{new Date(comment.createdAt).toLocaleString()}</p>
+                        </div>
                     </div>
                 ))}
             </div>
