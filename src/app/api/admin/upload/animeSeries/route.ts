@@ -1,5 +1,5 @@
 import {connect} from "@/dbConfig/dbConfig"
-import Series from "@/models/seiresModel.js"
+import Series from "@/models/seriesModel"
 import { NextRequest,NextResponse } from "next/server"
 
 

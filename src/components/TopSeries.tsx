@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
+import { useState } from 'react'
+
 
 
 
@@ -27,7 +29,6 @@ import toast from 'react-hot-toast';
 // }
 
 // React.useState<DataItem[]>([])
-
 
 
 
@@ -68,6 +69,18 @@ const TopSeries = () => {
   }, []);
    
  
+  const [user, setUser] = useState<string>("");
+  useEffect(() => {
+    const userDetails = async () => {
+        const res = await axios.get('/api/users/me');
+        console.log(res.data);
+        setUser(res.data.data._id)
+    }
+
+    userDetails()
+
+    
+  }, []);
 
 
 

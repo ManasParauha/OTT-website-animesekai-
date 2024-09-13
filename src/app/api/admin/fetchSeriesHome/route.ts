@@ -1,7 +1,7 @@
 
 
 import { NextRequest, NextResponse } from "next/server";
-import Series from "@/models/seiresModel.js";
+import Series from "@/models/seriesModel.js";
 import { connect } from "@/dbConfig/dbConfig";
 
 connect();

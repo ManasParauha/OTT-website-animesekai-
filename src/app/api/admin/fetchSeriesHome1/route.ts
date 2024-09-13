@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import Series from '@/models/seiresModel';
+import Series from '@/models/seriesModel';
 import { connect } from "@/dbConfig/dbConfig";
 
 

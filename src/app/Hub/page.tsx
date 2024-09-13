@@ -19,20 +19,27 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-
-
+import ViewHubs from "@/components/ViewHubs";
+import LikeButton from "@/components/LikeButton";
+import AddComments from "@/components/AddComments";
+import Comments from "@/components/Comments";
 
 interface User {
+  _id: string;
   username: string;
   photo: string;
+
 }
 
 interface HubData {
+  _id: string;
   title: string;
   description: string;
   thumbnail: string;
   url: string;
   user: User;
+  likes: number,
+  likedBy:string[],
 }
 
 const Page = () => {
@@ -86,6 +93,29 @@ const Page = () => {
       hubDetails();
     }
   }, []);
+  
+
+  const [user, setUser] = useState<string>("");
+  useEffect(() => {
+    const userDetails = async () => {
+        const res = await axios.get('/api/users/me');
+        console.log(res.data);
+        setUser(res.data.data._id)
+    }
+
+    userDetails()
+
+    
+  }, []);
+   
+ 
+ 
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
+  
+ 
 
   return (
     <div className="flex p-5 pb-10 ">
@@ -173,10 +203,10 @@ const Page = () => {
 
         <div className="text-foreground h-[90vh] flex flex-col gap-5 items-center w-full p-6">
           {data.map(  (data) => (
-            
-          
-           <div className="flex flex-col items-start p-5 border-border border-2 gap-5 w-72">
-              <div className="flex items-center gap-2">
+
+
+           <div className="flex flex-col items-start p-5 border-border border-2 gap-5 px-9 w-[80vw] sm:w-[90vw] md:w-[80vw]">
+              <div className="flex items-center  w-full gap-2">
                 {data.user?.photo && (
                   <Image
                     src={data.user.photo}
@@ -190,25 +220,41 @@ const Page = () => {
               </div>
               <h4>{data?.title}</h4>
               <div className="w-full flex justify-center items-center">
-                <video  height={300} width={300} controls src={data?.url} />
+                <video  height={300} width={700} controls src={data?.url} />
               </div>
-              <div className="flex flex-col gap-2">
-                <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-60 ">{data?.description}</h4>
-                <div className="flex gap-5 justify-start w-full">
-                  <FavoriteBorderIcon />
-                  <ChatBubbleOutlineIcon />
-                  <SendIcon />
+              <h4 className=" whitespace-nowrap overflow-hidden text-ellipsis w-full ">{data?.description}</h4>
+              <div className="flex flex-col  gap-2 w-full">
+                
+                <div className="flex gap-5  w-full">
+                 {/* <Button  >
+                  <FavoriteBorderIcon  /></Button> */}
+                  <LikeButton userHasLiked={Array.isArray(data?.likedBy) && data.likedBy.includes(user)} hubId={data._id.toString()} initialLikes={data.likes || 0} />
+                 <Button variant={"ghost"} onClick={toggleVisibility}> <ChatBubbleOutlineIcon /></Button>
+                  <Button variant='ghost'><SendIcon /></Button>
                 </div>
+                { isVisible && (<>
+                  <div className="w-full"><Comments hubId={data._id.toString()} /></div>
+                  <div className="w-full "><AddComments hubId={data._id.toString()} /></div></>
+                )}
               </div>
             </div>
           ))}
         </div>
+        {/* <ViewHubs data={data} /> */}<div className="mt-96"></div>
       </div>
 
       {/* <Navbar /> */}
-
+      
     </div>
   );
 };
 
 export default Page;
+
+
+
+
+
+
+
+

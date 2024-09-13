@@ -11,6 +11,8 @@ import TopMovies from "@/components/TopMovies";
 import { useEffect, useState } from "react";
 
 
+
+
 export default function Home() {
   // const router = useRouter()
   // const logout = async () => {
@@ -62,8 +64,10 @@ export default function Home() {
           
           <HeroSection />
          
+         
           <TopSeries/>
           <TopMovies />
+          
 
 
           {/* <Navbar /> */}
