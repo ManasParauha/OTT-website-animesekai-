@@ -9,6 +9,7 @@ import TopSeries from "@/components/TopSeries";
 import TopMovies from "@/components/TopMovies";
 
 import { useEffect, useState } from "react";
+import Watchlist from "@/components/Watchlist";
 
 
 
@@ -63,10 +64,14 @@ export default function Home() {
         <div className="w-full relative md:ml-24 flex flex-col overflow-x-hidden">
           
           <HeroSection />
+
+
+          <Watchlist userId={data}/>
          
          
           <TopSeries/>
           <TopMovies />
+          
           
 
 

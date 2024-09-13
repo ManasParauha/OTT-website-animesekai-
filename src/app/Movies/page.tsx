@@ -8,6 +8,8 @@ import Image from 'next/image';
 import poster from "../../../public/Poster.jpg"
 import { Button } from '@/components/ui/button'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import WatchlistButton from '@/components/WatchlistButton';
+import { useState } from 'react';
 
 const Movies = () => {
 
@@ -17,7 +19,8 @@ const Movies = () => {
             title: string,
             description: string,
             thumbnail: string,
-            url: string
+            url: string,
+            _id: string
         }[]>([])
 
 
@@ -45,6 +48,19 @@ const Movies = () => {
 
     }, []);
 
+    const [user, setUser] = useState<string>("");
+  useEffect(() => {
+    const userDetails = async () => {
+        const res = await axios.get('/api/users/me');
+        console.log(res.data);
+        setUser(res.data.data._id)
+    }
+
+    userDetails()
+
+    
+  }, []);
+
 
 
     return (
@@ -58,7 +74,7 @@ const Movies = () => {
 
                     <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-10  '>{data.title}</p>
 
-                    <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'>
+                    <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex absolute left-6 bottom-3 z-20'>
 
                         <Link href={
                             {
@@ -69,6 +85,12 @@ const Movies = () => {
                         }> <PlayArrowIcon /> Play Now</Link>
 
                     </Button>
+
+                    <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 '>
+                    <WatchlistButton userId={user} videoId={data._id} videoType={"movies"} />
+                    </div>
+
+                    
 
                     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition duration-300"></div>
 
