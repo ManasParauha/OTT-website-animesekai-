@@ -53,10 +53,10 @@ const SeriesDetails = () => {
     return (
         <div className='md:ml-24 p-5 flex flex-col gap-10'>
 
-            <div className='flex gap-2'>
+            <div className='flex flex-col md:flex-row gap-2'>
 
 
-                <Image src={series.thumbnail} width={550} height={350} alt='Thumbnail' />
+                <Image src={series.thumbnail} width={400} height={350} alt='Thumbnail' />
 
 
 
@@ -96,6 +96,8 @@ const SeriesDetails = () => {
 
 
             </div>
+
+            <div className='mt-36'></div>
 
         </div>
     );
