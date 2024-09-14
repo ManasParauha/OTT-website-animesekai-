@@ -11,6 +11,9 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 interface VideoDetails {
   title: string;
   description: string;
+  thumbnail: string;
+  url: string;
+  episodes:[]
   // Add other fields as necessary
 }
 
@@ -104,7 +107,7 @@ const Watchlist: React.FC<WatchlistProps> = ({ userId }) => {
         <Button className=' transition-opacity left-6 gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><Link href={
           {
             pathname: '/Player',
-            query: data.videoDetails
+            query:  { videoDetails: JSON.stringify(data.videoDetails) }
           }
         }> <PlayArrowIcon /> Play Now</Link></Button>
 
