@@ -42,6 +42,7 @@ const TopSeries = () => {
       thumbnail: string,
       episodeNo: number,
       url: string,
+      id: string,
       _id: string
     }[]>([])
 
@@ -116,7 +117,7 @@ const TopSeries = () => {
           <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
 
             {user && (
-              <WatchlistButton userId={user} videoId={data._id} videoType={"series"} />
+              <WatchlistButton userId={user} videoId={data.id} videoType={"series"} />
             )}
 
           </div>

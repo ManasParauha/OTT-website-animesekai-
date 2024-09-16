@@ -4,11 +4,11 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { EdgeStoreProvider } from '../lib/edgestore';
-import NavbarMD from "@/components/NavbarMD";
-import LogoUser from "@/components/LogoUser";
-import Navbar from "@/components/Navbar";
 import ConditionalComponent from "@/components/ConditionalComponent";
 
+
+import { useEffect, useState } from "react";
+import axios from 'axios';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -21,7 +21,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
 
 
   
@@ -41,8 +40,10 @@ export default function RootLayout({
 
           <ConditionalComponent/>
 
+          
           {children}
-
+       
+          
 
         </div>
 

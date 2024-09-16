@@ -7,6 +7,7 @@ import poster from '../../public/blur.jpg';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { ReloadIcon } from "@radix-ui/react-icons"
 // Define types for the data structure
 interface VideoDetails {
   title: string;
@@ -38,9 +39,10 @@ const Watchlist: React.FC<WatchlistProps> = ({ userId }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  
     const fetchWatchlist = async () => {
       try {
+        setLoading(true);
         const response = await axios.get<WatchlistResponse>('/api/users/watchlist/fetch', {
           params: { userId },
         });
@@ -60,8 +62,9 @@ const Watchlist: React.FC<WatchlistProps> = ({ userId }) => {
       }
     };
 
-    fetchWatchlist();
-  }, [userId]);
+    useEffect(() => {
+      fetchWatchlist();
+    }, []);
 
   const [user, setUser] = useState<string>("");
   useEffect(() => {
@@ -76,9 +79,12 @@ const Watchlist: React.FC<WatchlistProps> = ({ userId }) => {
     
   }, []);
 
-  if (loading) return <div>Loading your watchlist...</div>;
+  if (loading) return <Button disabled >
+  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+  Please wait
+</Button>
 
-  if (error) return <div>{error}</div>;
+  if (error) return <div> </div>;
 
   return (
     // <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -104,17 +110,17 @@ const Watchlist: React.FC<WatchlistProps> = ({ userId }) => {
       {Array.isArray(watchlist) && watchlist.map((data) => (<div className='group relative flex justify-center h-40 w-60  '>
         <Image src={data.videoDetails?.thumbnail || poster} alt='#' className='min-h-40 min-w-60  ' height={400} width={600} />
         <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20  '>{data?.videoDetails?.title || "title"}</p>
-        <Button className=' transition-opacity left-6 gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><Link href={
+       { <Button className=' transition-opacity left-6 gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><Link href={
           {
             pathname: '/Player',
             query:  { videoDetails: JSON.stringify(data.videoDetails) }
           }
-        }> <PlayArrowIcon /> Play Now</Link></Button>
+        }> <PlayArrowIcon /> Play Now</Link></Button>}
 
         <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
 
           {user && (
-            <WatchlistButton userId={user} videoId={data._id} videoType={"movies"} />
+            <WatchlistButton userId={user} videoId={data.videoId} videoType={data.videoType} onWatchlistChange={fetchWatchlist} />
           )}
 
         </div>

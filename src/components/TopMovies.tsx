@@ -83,7 +83,7 @@ const TopMovies = () => {
           <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
 
             {user && (
-              <WatchlistButton userId={user} videoId={data._id} videoType={"movies"} />
+              <WatchlistButton userId={user}  videoId={data._id} videoType={"movies"} />
             )}
 
           </div>

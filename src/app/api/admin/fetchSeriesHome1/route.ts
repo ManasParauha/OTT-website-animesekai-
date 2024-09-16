@@ -12,6 +12,7 @@ interface Episode {
   
   interface SeriesType {
     title: string;
+    _id: string;
     episodes: Episode[];
   }
   connect();
@@ -26,6 +27,7 @@ interface Episode {
       const allEpisodes = seriesData.flatMap((series) =>
         series.episodes.map((episode) => ({
           seriesTitle: series.title,
+          id: series._id,
           episodeNo: episode.episodeNo,
           thumbnail: episode.thumbnail,
           url: episode.url,
