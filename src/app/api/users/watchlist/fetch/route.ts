@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
         const watchlistItems = await Watchlist.find({ userId });
         
 
-        if(!watchlistItems.length) { return NextResponse.json({ error: "No items found in your watchlist." }, { status: 404 }); }
+        // if(!watchlistItems.length) { return NextResponse.json({ error: "No items found in your watchlist." }, { status: 404 }); }
 
         const populatedWatchlist = await Promise.all(
             watchlistItems.map(async (item) => {

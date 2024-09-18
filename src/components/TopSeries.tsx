@@ -31,9 +31,11 @@ import WatchlistButton from './WatchlistButton'
 
 // React.useState<DataItem[]>([])
 
+interface props {
+  onWatchlistChange ?: () => void
+}
 
-
-const TopSeries = () => {
+const TopSeries = ({onWatchlistChange}: props)  => {
   // const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [data, setData] = React.useState<
@@ -117,7 +119,7 @@ const TopSeries = () => {
           <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
 
             {user && (
-              <WatchlistButton userId={user} videoId={data.id} videoType={"series"} />
+              <WatchlistButton userId={user} videoId={data.id} videoType={"series"} onWatchlistChange={onWatchlistChange}  />
             )}
 
           </div>

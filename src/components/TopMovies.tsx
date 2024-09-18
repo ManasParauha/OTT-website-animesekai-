@@ -10,7 +10,12 @@ import toast from 'react-hot-toast';
 import Link from 'next/link';
 import WatchlistButton from './WatchlistButton'
 
-const TopMovies = () => {
+
+interface props {
+  onWatchlistChange ?: () => void
+}
+
+const TopMovies = ({onWatchlistChange}: props) => {
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [data, setData] = React.useState<
@@ -83,7 +88,7 @@ const TopMovies = () => {
           <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
 
             {user && (
-              <WatchlistButton userId={user}  videoId={data._id} videoType={"movies"} />
+              <WatchlistButton userId={user}  videoId={data._id} videoType={"movies"} onWatchlistChange={onWatchlistChange}  />
             )}
 
           </div>
