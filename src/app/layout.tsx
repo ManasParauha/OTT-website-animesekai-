@@ -7,8 +7,8 @@ import { EdgeStoreProvider } from '../lib/edgestore';
 import ConditionalComponent from "@/components/ConditionalComponent";
 
 
-import { useEffect, useState } from "react";
-import axios from 'axios';
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -41,7 +41,9 @@ export default function RootLayout({
           <ConditionalComponent/>
 
           
+        
           {children}
+         
        
           
 
