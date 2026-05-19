@@ -1,16 +1,26 @@
 import {connect} from "@/dbConfig/dbConfig"
 import Series from "@/models/seriesModel"
 import { NextRequest,NextResponse } from "next/server"
+import { denyIfNotAdmin } from "@/helpers/adminAuth";
 
 
 connect()
 
 export async function POST(request:NextRequest) {
+    const denied = await denyIfNotAdmin(request);
+    if (denied) return denied;
+
     try {
         const reqBody = await request.json();
         const {title, description,thumbnail,episodes} = reqBody;
 
-        console.log(reqBody)
+        if (!title?.trim() || !description?.trim() || !thumbnail?.trim()) {
+            return NextResponse.json({error:"title, description, and thumbnail are required"},{status:400})
+        }
+
+        if (!Array.isArray(episodes)) {
+            return NextResponse.json({error:"episodes must be an array"},{status:400})
+        }
 
         //check if video already exists
 
@@ -43,7 +53,7 @@ export async function POST(request:NextRequest) {
 
         
     } catch (error:any) {
-        return NextResponse.json({error:error.massage},{status:500})       
+        return NextResponse.json({error:error.message},{status:500})       
     }
     
 }

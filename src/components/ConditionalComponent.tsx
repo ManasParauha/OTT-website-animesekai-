@@ -11,7 +11,7 @@ const excludedRoutes = ['/Login', '/Signup'];
 const ConditionalComponents: React.FC = () => {
   const currentPath = usePathname();
 
-  if (excludedRoutes.includes(currentPath)) return null;
+  if (excludedRoutes.includes(currentPath) || currentPath.startsWith('/sekai-control')) return null;
 
   return (
     <>

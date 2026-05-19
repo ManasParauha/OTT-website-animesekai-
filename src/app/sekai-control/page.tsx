@@ -1,10 +1,15 @@
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getAdminAuthFromToken } from "@/helpers/adminAuth";
+import AdminDashboard from "./AdminDashboard";
 
 export const dynamic = "force-dynamic";
 
-export default async function AnimeMoviesUploadRedirect() {
+export const metadata = {
+  title: "Sekai Control",
+};
+
+export default async function SekaiControlPage() {
   const auth = await getAdminAuthFromToken(cookies().get("token")?.value);
 
   if (auth.status === "unauthenticated") {
@@ -15,6 +20,6 @@ export default async function AnimeMoviesUploadRedirect() {
     notFound();
   }
 
-  redirect("/sekai-control");
+  return <AdminDashboard />;
 }
 

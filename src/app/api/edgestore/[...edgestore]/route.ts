@@ -1,15 +1,13 @@
-import { initEdgeStore } from '@edgestore/server';
 import { createEdgeStoreNextHandler } from '@edgestore/server/adapters/next/app';
-
-
-const es = initEdgeStore.create();
-
-const edgeStoreRouter = es.router({
-    publicFiles: es.fileBucket(),
-  });
+import { getAdminAuthFromToken } from '@/helpers/adminAuth';
+import { edgeStoreRouter } from '@/lib/edgestoreRouter';
 
   const handler = createEdgeStoreNextHandler({
     router: edgeStoreRouter,
+    createContext: async ({ req }) => {
+      const auth = await getAdminAuthFromToken(req.cookies.get("token")?.value);
+      return { isAdmin: auth.status === "authorized" ? "true" : "false" };
+    },
   });
 
   export { handler as GET, handler as POST };
@@ -17,4 +15,3 @@ const edgeStoreRouter = es.router({
 /**
  * This type is used to create the type-safe client for the frontend.
  */
-export type EdgeStoreRouter = typeof edgeStoreRouter;
