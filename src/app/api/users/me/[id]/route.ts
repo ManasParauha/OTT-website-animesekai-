@@ -10,7 +10,9 @@ export async function GET(request:NextRequest, { params }: { params: { id: strin
   const { id } = params; // Extract the user ID from the request URL
 
   try {
-    const user = await User.findById(id); // Fetch the user from the database using Mongoose
+    const user = await User.findById(id).select(
+      "-password -forgotPasswordToken -forgotPasswordTokenExpiry -verifyToken -verifyTokenExpiry"
+    ); // Fetch the user without sensitive fields
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }

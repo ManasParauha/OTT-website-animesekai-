@@ -15,35 +15,20 @@ const AddComments = ({ hubId }: { hubId: string }) => {
   const [comments, setComments] = useState<Comment[]>([]); // Initialize as an empty array
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string>('');
-
-  // Fetch user details to get user ID
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const res = await axios.get('/api/users/me');
-        setUserId(res.data.data._id);
-      } catch (err) {
-        console.error('Error fetching user details:', err);
-      }
-    };
-    fetchUserDetails();
-  }, []);
-
-  // Fetch comments for the hub
-  const fetchComments = async () => {
-    try {
-      const res = await axios.get(`/api/users/hub/${hubId}/comments`);
-      setComments(Array.isArray(res.data.comments) ? res.data.comments : []); // Ensure res.data.comments is an array
-    } catch (err) {
-      console.error('Error fetching comments:', err);
-    }
-  };
 
   // Fetch comments when the component mounts
   useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`/api/users/hub/comments/${hubId}`);
+        setComments(Array.isArray(res.data) ? res.data : []); // Ensure response data is an array
+      } catch (err) {
+        console.error('Error fetching comments:', err);
+      }
+    };
+
     fetchComments();
-  }, []);
+  }, [hubId]);
 
   // Handle posting a comment
   const handlePostComment = async () => {
@@ -55,7 +40,6 @@ const AddComments = ({ hubId }: { hubId: string }) => {
       setError(null);
       const response = await axios.post('/api/users/hub/comments', {
         content,
-        userId,
         hubId,
       });
       setContent('');

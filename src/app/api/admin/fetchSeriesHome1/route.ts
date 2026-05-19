@@ -16,6 +16,9 @@ interface Episode {
     episodes: Episode[];
   }
   connect();
+
+  export const dynamic = "force-dynamic";
+
   export async function GET() {
     try {
       

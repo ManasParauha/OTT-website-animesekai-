@@ -10,10 +10,15 @@ connect();
 export async function POST(request: NextRequest) {
     try {
         const { hubId } = await request.json();
-        const userId = getDataFromToken(request);
-
-        if (!userId) {
+        let userId: string;
+        try {
+            userId = getDataFromToken(request);
+        } catch {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(hubId)) {
+            return NextResponse.json({ message: 'Invalid hub id' }, { status: 400 });
         }
 
         const hub = await Hub.findById(hubId);
@@ -27,8 +32,9 @@ export async function POST(request: NextRequest) {
 
         // Convert userId to ObjectId 
         const userObjectId = new mongoose.Types.ObjectId(userId);
+        const hasLiked = hub.likedBy.some((id: mongoose.Types.ObjectId) => id.equals(userObjectId));
 
-        if (hub.likedBy.includes(userObjectId)) {
+        if (hasLiked) {
             // User has already liked, so unlike it
             hub.likes = Math.max((hub.likes || 0) - 1, 0); // Decrease like count, ensuring it doesn't go below 0
             hub.likedBy = hub.likedBy.filter((id:any) => !id.equals(userObjectId)); // Remove user from likedBy
@@ -39,8 +45,9 @@ export async function POST(request: NextRequest) {
         }
 
         await hub.save();
+        const isLiked = hub.likedBy.some((id: mongoose.Types.ObjectId) => id.equals(userObjectId));
 
-        return NextResponse.json({ likes: hub.likes, isLiked: hub.likedBy.includes(userObjectId) }, { status: 200 });
+        return NextResponse.json({ likes: hub.likes, isLiked }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: 'Error updating Hub', error }, { status: 500 });
     }

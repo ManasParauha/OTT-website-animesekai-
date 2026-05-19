@@ -29,7 +29,7 @@ export default function WatchlistButton({
     const checkWatchlistStatus = async () => {
       try {
         const response = await axios.get('/api/users/watchlist/check', {
-          params: { userId, videoId, videoType },
+          params: { videoId, videoType },
         });
         // Assume the API returns a boolean indicating watchlist status
         setIsInWatchlist(response.data.isInWatchlist);
@@ -46,12 +46,12 @@ export default function WatchlistButton({
       if (isInWatchlist) {
         // Remove from watchlist
         await axios.delete('/api/users/watchlist/remove', {
-          data: { userId, videoId, videoType },
+          data: { videoId, videoType },
         });
         setIsInWatchlist(false);
       } else {
         // Add to watchlist
-        await axios.post('/api/users/watchlist/add', { userId, videoId, videoType });
+        await axios.post('/api/users/watchlist/add', { videoId, videoType });
         setIsInWatchlist(true);
       }
       if (onWatchlistChange) {

@@ -5,6 +5,9 @@ import Comment from '@/models/commetSchema'
 
 
 connect()
+
+export const dynamic = 'force-dynamic';
+
 // Fetch comments for a specific Hub post by hubId
 export async function GET(req: NextRequest, { params }: { params: { hubId: string } }) {
   const { hubId } = params;

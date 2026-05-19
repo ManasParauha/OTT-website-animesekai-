@@ -22,7 +22,6 @@ import { Progress } from "@/components/ui/progress";
 import ViewHubs from "@/components/ViewHubs";
 import LikeButton from "@/components/LikeButton";
 import AddComments from "@/components/AddComments";
-import Comments from "@/components/Comments";
 
 interface User {
   _id: string;
@@ -110,9 +109,9 @@ const Page = () => {
    
  
  
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
+  const [visibleHubId, setVisibleHubId] = useState<string | null>(null);
+  const toggleVisibility = (hubId: string) => {
+    setVisibleHubId((currentHubId) => currentHubId === hubId ? null : hubId);
   };
   
  
@@ -205,7 +204,7 @@ const Page = () => {
           {data.map(  (data) => (
 
 
-           <div className="flex flex-col items-start p-5 border-border border-2 gap-5 px-9 w-[80vw] sm:w-[90vw] md:w-[80vw]">
+            <div key={data._id} className="flex flex-col items-start p-5 border-border border-2 gap-5 px-9 w-[80vw] sm:w-[90vw] md:w-[80vw]">
               <div className="flex items-center  w-full gap-2">
                 {data.user?.photo && (
                   <Image
@@ -229,12 +228,11 @@ const Page = () => {
                  {/* <Button  >
                   <FavoriteBorderIcon  /></Button> */}
                   <LikeButton userHasLiked={Array.isArray(data?.likedBy) && data.likedBy.includes(user)} hubId={data._id.toString()} initialLikes={data.likes || 0} />
-                 <Button variant={"ghost"} onClick={toggleVisibility}> <ChatBubbleOutlineIcon /></Button>
+                  <Button variant={"ghost"} onClick={() => toggleVisibility(data._id.toString())}> <ChatBubbleOutlineIcon /></Button>
                   <Button variant='ghost'><SendIcon /></Button>
                 </div>
-                { isVisible && (<>
-                  <div className="w-full"><Comments hubId={data._id.toString()} /></div>
-                  <div className="w-full "><AddComments hubId={data._id.toString()} /></div></>
+                { visibleHubId === data._id.toString() && (
+                  <div className="w-full "><AddComments hubId={data._id.toString()} /></div>
                 )}
               </div>
             </div>
