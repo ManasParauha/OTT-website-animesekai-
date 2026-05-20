@@ -9,10 +9,10 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { useEdgeStore } from "@/lib/edgestore";
 import MediaPreview from "../MediaPreview";
@@ -46,9 +46,10 @@ const emptySeriesForm: SeriesForm = {
 };
 
 function toPayloadEpisodes(episodes: EpisodeItem[]) {
-  return [...episodes]
-    .sort((a, b) => a.episodeNo - b.episodeNo)
-    .map(({ thumbnailFile, videoFile, ...episode }) => episode);
+  return episodes.map(({ thumbnailFile, videoFile, ...episode }, index) => ({
+    ...episode,
+    episodeNo: index,
+  }));
 }
 
 export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
@@ -82,12 +83,15 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
           description: series.description || "",
           thumbnail: series.thumbnail || "",
           episodes: Array.isArray(series.episodes)
-            ? series.episodes.map((episode: EpisodeItem, index: number) => ({
-                _id: episode._id,
-                episodeNo: Number.isFinite(Number(episode.episodeNo)) ? Number(episode.episodeNo) : index,
-                thumbnail: episode.thumbnail || "",
-                url: episode.url || "",
-              }))
+            ? series.episodes
+                .map((episode: EpisodeItem, index: number) => ({
+                  _id: episode._id,
+                  episodeNo: Number.isFinite(Number(episode.episodeNo)) ? Number(episode.episodeNo) : index,
+                  thumbnail: episode.thumbnail || "",
+                  url: episode.url || "",
+                }))
+                .sort((a: EpisodeItem, b: EpisodeItem) => a.episodeNo - b.episodeNo)
+                .map((episode: EpisodeItem, index: number) => ({ ...episode, episodeNo: index }))
             : [],
         });
         setSeriesThumbnailFile(null);
@@ -223,14 +227,14 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
       return false;
     }
 
-    const invalidEpisode = form.episodes.find(
+    const invalidEpisodeIndex = form.episodes.findIndex(
       (episode) =>
         (!episode.thumbnail.trim() && !episode.thumbnailFile) ||
         (!episode.url.trim() && !episode.videoFile)
     );
 
-    if (invalidEpisode) {
-      toast.error(`Episode ${invalidEpisode.episodeNo + 1} needs a thumbnail and video.`);
+    if (invalidEpisodeIndex !== -1) {
+      toast.error(`Episode ${invalidEpisodeIndex + 1} needs a thumbnail and video.`);
       return false;
     }
 
@@ -256,7 +260,7 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
       if (episode.thumbnailFile) {
         const thumbnail = await uploadFile(
           episode.thumbnailFile.file,
-          `Uploading episode ${episode.episodeNo + 1} thumbnail`
+          `Uploading episode ${index + 1} thumbnail`
         );
         revokeStagedFile(episode.thumbnailFile);
         episode = { ...episode, thumbnail, thumbnailFile: null };
@@ -266,7 +270,7 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
       }
 
       if (episode.videoFile) {
-        const url = await uploadFile(episode.videoFile.file, `Uploading episode ${episode.episodeNo + 1} video`);
+        const url = await uploadFile(episode.videoFile.file, `Uploading episode ${index + 1} video`);
         revokeStagedFile(episode.videoFile);
         episode = { ...episode, url, videoFile: null };
         nextForm.episodes[index] = episode;
@@ -304,6 +308,16 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
     }
   };
 
+  const saveButtonLabel = uploadingLabel
+    ? `${uploadingLabel} ${uploadProgress}%`
+    : isSaving
+      ? seriesId
+        ? "Saving Series..."
+        : "Creating Series..."
+      : seriesId
+        ? "Save Series"
+        : "Create Series";
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-6 sm:px-8">
@@ -319,16 +333,6 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
             <h1 className="text-3xl font-bold">{seriesId ? "Edit Series" : "Upload Series"}</h1>
           </div>
         </header>
-
-        {uploadingLabel && (
-          <div className="rounded-md border border-border p-4">
-            <div className="mb-2 flex items-center justify-between text-sm">
-              <span>{uploadingLabel}</span>
-              <span>{uploadProgress}%</span>
-            </div>
-            <Progress value={uploadProgress} />
-          </div>
-        )}
 
         <form className="flex flex-col gap-4 rounded-md border border-border p-5" onSubmit={(event) => event.preventDefault()}>
           {isLoading ? (
@@ -365,19 +369,10 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
                 {form.episodes.map((episode, index) => (
                   <div key={`${episode._id || "new"}-${index}`} className="grid gap-3 rounded-md border border-border p-4">
                     <div className="flex items-center justify-between gap-3">
-                      <h3 className="font-semibold">Episode {episode.episodeNo + 1}</h3>
+                      <h3 className="font-semibold">Episode {index + 1}</h3>
                       <Button type="button" variant="destructive" size="icon" onClick={() => removeEpisode(index)}>
                         <DeleteIcon fontSize="small" />
                       </Button>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label>Episode Number</Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        value={episode.episodeNo}
-                        onChange={(event) => updateEpisode(index, { episodeNo: Number(event.target.value) })}
-                      />
                     </div>
                     <div className="grid gap-2">
                       <Label>Thumbnail URL</Label>
@@ -391,7 +386,7 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
                         onChange={(event) => handleEpisodeFileSelection(event, index, "thumbnail")}
                       />
                       <MediaPreview
-                        label={`Episode ${episode.episodeNo + 1} Thumbnail`}
+                        label={`Episode ${index + 1} Thumbnail`}
                         type="image"
                         url={episode.thumbnailFile?.previewUrl || episode.thumbnail}
                       />
@@ -405,7 +400,7 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
                         onChange={(event) => handleEpisodeFileSelection(event, index, "url")}
                       />
                       <MediaPreview
-                        label={`Episode ${episode.episodeNo + 1} Video`}
+                        label={`Episode ${index + 1} Video`}
                         type="video"
                         url={episode.videoFile?.previewUrl || episode.url}
                       />
@@ -420,8 +415,8 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
               </div>
 
               <Button type="button" className="gap-2" disabled={isSaving} onClick={saveSeries}>
-                <SaveIcon fontSize="small" />
-                {seriesId ? "Save Series" : "Create Series"}
+                {isSaving ? <CircularProgress size={18} color="inherit" /> : <SaveIcon fontSize="small" />}
+                {saveButtonLabel}
               </Button>
             </>
           )}
