@@ -3,6 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import poster from "../../public/blur.jpg"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import axios from 'axios';
 import { useEffect } from 'react';
@@ -33,6 +34,21 @@ import WatchlistButton from './WatchlistButton'
 
 interface props {
   onWatchlistChange ?: () => void
+}
+
+function TopSeriesSkeleton() {
+  return (
+    <>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div key={index} className='relative h-40 w-60 min-w-60 overflow-hidden'>
+          <Skeleton className='h-full w-full rounded-none' />
+          <div className='absolute inset-0 bg-gradient-to-t from-background/70 to-transparent' />
+          <Skeleton className='absolute left-4 top-4 h-6 w-32' />
+          <Skeleton className='absolute bottom-4 left-4 h-9 w-28' />
+        </div>
+      ))}
+    </>
+  );
 }
 
 const TopSeries = ({onWatchlistChange}: props)  => {
@@ -103,7 +119,7 @@ const TopSeries = ({onWatchlistChange}: props)  => {
 
 
 
-        {Array.isArray(data) && data.map((data) => (<div key={data?._id} className='group relative flex justify-center h-40 w-60 '>
+        {isLoading ? <TopSeriesSkeleton /> : Array.isArray(data) && data.map((data) => (<div key={data?._id} className='group relative flex justify-center h-40 w-60 '>
 
           <Image src={data?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
 

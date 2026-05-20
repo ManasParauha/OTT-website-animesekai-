@@ -144,7 +144,6 @@ import poster from '../../public/blur.jpg';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { ReloadIcon } from "@radix-ui/react-icons"
 // Define types for the data structure
 interface VideoDetails {
   title: string;
@@ -178,10 +177,7 @@ interface WatchlistProps {
 const Watchlist: React.FC<WatchlistProps> = ({ userId, watchlist, onWatchlistChange, loading, error }) => {
 
 
-  if (loading) return <Button disabled >
-    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-    Please wait
-  </Button>
+  if (loading) return null;
 
   if ( watchlist.length === 0) return <div> </div>;
   if(!watchlist) return <div> </div>;
