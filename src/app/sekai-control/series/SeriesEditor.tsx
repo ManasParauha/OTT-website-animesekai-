@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -17,11 +17,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEdgeStore } from "@/lib/edgestore";
 import MediaPreview from "../MediaPreview";
 
+type StagedFile = {
+  file: File;
+  previewUrl: string;
+};
+
 type EpisodeItem = {
   _id?: string;
   episodeNo: number;
   thumbnail: string;
   url: string;
+  thumbnailFile?: StagedFile | null;
+  videoFile?: StagedFile | null;
 };
 
 type SeriesForm = {
@@ -38,19 +45,29 @@ const emptySeriesForm: SeriesForm = {
   episodes: [],
 };
 
+function toPayloadEpisodes(episodes: EpisodeItem[]) {
+  return [...episodes]
+    .sort((a, b) => a.episodeNo - b.episodeNo)
+    .map(({ thumbnailFile, videoFile, ...episode }) => episode);
+}
+
 export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
   const router = useRouter();
   const { edgestore } = useEdgeStore();
+  const objectUrlsRef = useRef<string[]>([]);
   const [form, setForm] = useState<SeriesForm>(emptySeriesForm);
+  const [seriesThumbnailFile, setSeriesThumbnailFile] = useState<StagedFile | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(seriesId));
   const [isSaving, setIsSaving] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadingLabel, setUploadingLabel] = useState("");
 
-  const sortedEpisodes = useMemo(
-    () => [...form.episodes].sort((a, b) => a.episodeNo - b.episodeNo),
-    [form.episodes]
-  );
+  useEffect(() => {
+    return () => {
+      objectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      objectUrlsRef.current = [];
+    };
+  }, []);
 
   useEffect(() => {
     if (!seriesId) return;
@@ -73,6 +90,7 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
               }))
             : [],
         });
+        setSeriesThumbnailFile(null);
       } catch (error: any) {
         toast.error(error.response?.data?.error || "Could not load series.");
         router.push("/sekai-control?tab=series");
@@ -84,6 +102,24 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
     fetchSeries();
   }, [seriesId, router]);
 
+  const createStagedFile = (file: File): StagedFile => {
+    const previewUrl = URL.createObjectURL(file);
+    objectUrlsRef.current.push(previewUrl);
+    return { file, previewUrl };
+  };
+
+  const revokeStagedFile = (stagedFile?: StagedFile | null) => {
+    if (!stagedFile) return;
+
+    URL.revokeObjectURL(stagedFile.previewUrl);
+    objectUrlsRef.current = objectUrlsRef.current.filter((url) => url !== stagedFile.previewUrl);
+  };
+
+  const clearSeriesThumbnailFile = (stagedFile = seriesThumbnailFile) => {
+    revokeStagedFile(stagedFile);
+    setSeriesThumbnailFile(null);
+  };
+
   const uploadFile = async (file: File, label: string) => {
     setUploadingLabel(label);
     setUploadProgress(0);
@@ -92,26 +128,28 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
         file,
         onProgressChange: setUploadProgress,
       });
-      toast.success(`${label} uploaded`);
       return upload.url;
     } catch (error: any) {
-      toast.error(error.message || `${label} upload failed`);
-      return "";
+      throw new Error(error.message || `${label} upload failed`);
     } finally {
       setUploadingLabel("");
       setUploadProgress(0);
     }
   };
 
-  const handleSeriesThumbnailUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeriesThumbnailSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const url = await uploadFile(file, "Series thumbnail");
-    if (url) {
-      setForm((current) => ({ ...current, thumbnail: url }));
-    }
+    const stagedFile = createStagedFile(file);
+    revokeStagedFile(seriesThumbnailFile);
+    setSeriesThumbnailFile(stagedFile);
     event.target.value = "";
+  };
+
+  const updateSeriesThumbnailUrl = (value: string) => {
+    clearSeriesThumbnailFile();
+    setForm((current) => ({ ...current, thumbnail: value }));
   };
 
   const updateEpisode = (index: number, patch: Partial<EpisodeItem>) => {
@@ -123,20 +161,25 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
     }));
   };
 
-  const handleEpisodeFileUpload = async (
+  const handleEpisodeFileSelection = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
-    field: "thumbnail" | "url",
-    label: string
+    field: "thumbnail" | "url"
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const url = await uploadFile(file, label);
-    if (url) {
-      updateEpisode(index, { [field]: url });
-    }
+    const stagedKey = field === "thumbnail" ? "thumbnailFile" : "videoFile";
+    const stagedFile = createStagedFile(file);
+    revokeStagedFile(form.episodes[index]?.[stagedKey]);
+    updateEpisode(index, { [stagedKey]: stagedFile });
     event.target.value = "";
+  };
+
+  const updateEpisodeMediaUrl = (index: number, field: "thumbnail" | "url", value: string) => {
+    const stagedKey = field === "thumbnail" ? "thumbnailFile" : "videoFile";
+    revokeStagedFile(form.episodes[index]?.[stagedKey]);
+    updateEpisode(index, { [field]: value, [stagedKey]: null });
   };
 
   const addEpisode = () => {
@@ -154,6 +197,8 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
   };
 
   const removeEpisode = (index: number) => {
+    revokeStagedFile(form.episodes[index]?.thumbnailFile);
+    revokeStagedFile(form.episodes[index]?.videoFile);
     setForm((current) => ({
       ...current,
       episodes: current.episodes
@@ -162,12 +207,86 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
     }));
   };
 
+  const validateSeriesForm = () => {
+    if (!form.title.trim()) {
+      toast.error("Series title is required.");
+      return false;
+    }
+
+    if (!form.description.trim()) {
+      toast.error("Series description is required.");
+      return false;
+    }
+
+    if (!form.thumbnail.trim() && !seriesThumbnailFile) {
+      toast.error("Series thumbnail is required.");
+      return false;
+    }
+
+    const invalidEpisode = form.episodes.find(
+      (episode) =>
+        (!episode.thumbnail.trim() && !episode.thumbnailFile) ||
+        (!episode.url.trim() && !episode.videoFile)
+    );
+
+    if (invalidEpisode) {
+      toast.error(`Episode ${invalidEpisode.episodeNo + 1} needs a thumbnail and video.`);
+      return false;
+    }
+
+    return true;
+  };
+
+  const uploadStagedSeriesFiles = async () => {
+    let nextForm: SeriesForm = {
+      ...form,
+      episodes: form.episodes.map((episode) => ({ ...episode })),
+    };
+
+    if (seriesThumbnailFile) {
+      const thumbnail = await uploadFile(seriesThumbnailFile.file, "Uploading series thumbnail");
+      nextForm = { ...nextForm, thumbnail };
+      setForm(nextForm);
+      clearSeriesThumbnailFile(seriesThumbnailFile);
+    }
+
+    for (let index = 0; index < nextForm.episodes.length; index += 1) {
+      let episode = nextForm.episodes[index];
+
+      if (episode.thumbnailFile) {
+        const thumbnail = await uploadFile(
+          episode.thumbnailFile.file,
+          `Uploading episode ${episode.episodeNo + 1} thumbnail`
+        );
+        revokeStagedFile(episode.thumbnailFile);
+        episode = { ...episode, thumbnail, thumbnailFile: null };
+        nextForm.episodes[index] = episode;
+        nextForm = { ...nextForm, episodes: [...nextForm.episodes] };
+        setForm(nextForm);
+      }
+
+      if (episode.videoFile) {
+        const url = await uploadFile(episode.videoFile.file, `Uploading episode ${episode.episodeNo + 1} video`);
+        revokeStagedFile(episode.videoFile);
+        episode = { ...episode, url, videoFile: null };
+        nextForm.episodes[index] = episode;
+        nextForm = { ...nextForm, episodes: [...nextForm.episodes] };
+        setForm(nextForm);
+      }
+    }
+
+    return nextForm;
+  };
+
   const saveSeries = async () => {
+    if (!validateSeriesForm()) return;
+
     try {
       setIsSaving(true);
+      const uploadedForm = await uploadStagedSeriesFiles();
       const payload = {
-        ...form,
-        episodes: sortedEpisodes,
+        ...uploadedForm,
+        episodes: toPayloadEpisodes(uploadedForm.episodes),
       };
 
       if (seriesId) {
@@ -179,7 +298,7 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
       }
       router.push("/sekai-control?tab=series");
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Series save failed.");
+      toast.error(error.response?.data?.error || error.message || "Series save failed.");
     } finally {
       setIsSaving(false);
     }
@@ -226,9 +345,9 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
               </div>
               <div className="grid gap-2">
                 <Label>Series Thumbnail URL</Label>
-                <Input value={form.thumbnail} onChange={(event) => setForm({ ...form, thumbnail: event.target.value })} />
-                <Input type="file" accept="image/*" onChange={handleSeriesThumbnailUpload} />
-                <MediaPreview label="Series Thumbnail" type="image" url={form.thumbnail} />
+                <Input value={form.thumbnail} onChange={(event) => updateSeriesThumbnailUrl(event.target.value)} />
+                <Input type="file" accept="image/*" onChange={handleSeriesThumbnailSelection} />
+                <MediaPreview label="Series Thumbnail" type="image" url={seriesThumbnailFile?.previewUrl || form.thumbnail} />
               </div>
 
               <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
@@ -262,27 +381,34 @@ export default function SeriesEditor({ seriesId }: { seriesId?: string }) {
                     </div>
                     <div className="grid gap-2">
                       <Label>Thumbnail URL</Label>
-                      <Input value={episode.thumbnail} onChange={(event) => updateEpisode(index, { thumbnail: event.target.value })} />
+                      <Input
+                        value={episode.thumbnail}
+                        onChange={(event) => updateEpisodeMediaUrl(index, "thumbnail", event.target.value)}
+                      />
                       <Input
                         type="file"
                         accept="image/*"
-                        onChange={(event) =>
-                          handleEpisodeFileUpload(event, index, "thumbnail", `Episode ${episode.episodeNo + 1} thumbnail`)
-                        }
+                        onChange={(event) => handleEpisodeFileSelection(event, index, "thumbnail")}
                       />
-                      <MediaPreview label={`Episode ${episode.episodeNo + 1} Thumbnail`} type="image" url={episode.thumbnail} />
+                      <MediaPreview
+                        label={`Episode ${episode.episodeNo + 1} Thumbnail`}
+                        type="image"
+                        url={episode.thumbnailFile?.previewUrl || episode.thumbnail}
+                      />
                     </div>
                     <div className="grid gap-2">
                       <Label>Video URL</Label>
-                      <Input value={episode.url} onChange={(event) => updateEpisode(index, { url: event.target.value })} />
+                      <Input value={episode.url} onChange={(event) => updateEpisodeMediaUrl(index, "url", event.target.value)} />
                       <Input
                         type="file"
                         accept="video/*"
-                        onChange={(event) =>
-                          handleEpisodeFileUpload(event, index, "url", `Episode ${episode.episodeNo + 1} video`)
-                        }
+                        onChange={(event) => handleEpisodeFileSelection(event, index, "url")}
                       />
-                      <MediaPreview label={`Episode ${episode.episodeNo + 1} Video`} type="video" url={episode.url} />
+                      <MediaPreview
+                        label={`Episode ${episode.episodeNo + 1} Video`}
+                        type="video"
+                        url={episode.videoFile?.previewUrl || episode.url}
+                      />
                     </div>
                   </div>
                 ))}

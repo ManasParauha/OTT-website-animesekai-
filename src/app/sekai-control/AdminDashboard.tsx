@@ -9,8 +9,11 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
+import SearchIcon from "@mui/icons-material/Search";
 import TvIcon from "@mui/icons-material/Tv";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type MovieItem = {
   _id: string;
@@ -35,6 +38,30 @@ type SeriesItem = {
   episodes: EpisodeItem[];
 };
 
+function ContentListSkeleton() {
+  return (
+    <div className="grid gap-3" aria-label="Loading content">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <article
+          key={index}
+          className="grid gap-3 rounded-md border border-border p-4 md:grid-cols-[160px_1fr_auto] md:items-center"
+        >
+          <Skeleton className="aspect-video w-full md:w-[160px]" />
+          <div className="grid min-w-0 gap-3">
+            <Skeleton className="h-6 w-56 max-w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-9 w-9" />
+            <Skeleton className="h-9 w-9" />
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -43,6 +70,10 @@ export default function AdminDashboard() {
   );
   const [movies, setMovies] = useState<MovieItem[]>([]);
   const [seriesList, setSeriesList] = useState<SeriesItem[]>([]);
+  const [searchQueries, setSearchQueries] = useState<Record<"movies" | "series", string>>({
+    movies: "",
+    series: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchContent = async () => {
@@ -95,6 +126,22 @@ export default function AdminDashboard() {
     }
   };
 
+  const activeSearchQuery = searchQueries[activeTab];
+  const normalizedSearchQuery = activeSearchQuery.trim().toLowerCase();
+  const filteredMovies = normalizedSearchQuery
+    ? movies.filter((movie) => movie.title.toLowerCase().includes(normalizedSearchQuery))
+    : movies;
+  const filteredSeries = normalizedSearchQuery
+    ? seriesList.filter((series) => series.title.toLowerCase().includes(normalizedSearchQuery))
+    : seriesList;
+
+  const updateActiveSearchQuery = (value: string) => {
+    setSearchQueries((current) => ({
+      ...current,
+      [activeTab]: value,
+    }));
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-8">
@@ -135,9 +182,21 @@ export default function AdminDashboard() {
                   : "Manage series records, thumbnails, and episode assets."}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="relative w-full sm:w-80">
+                <SearchIcon
+                  fontSize="small"
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <Input
+                  value={activeSearchQuery}
+                  onChange={(event) => updateActiveSearchQuery(event.target.value)}
+                  placeholder={activeTab === "movies" ? "Search movies" : "Search series"}
+                  className="pl-10"
+                />
+              </div>
               <Button type="button" variant="outline" onClick={fetchContent} disabled={isLoading}>
-                Refresh
+                {isLoading ? "Loading..." : "Refresh"}
               </Button>
               <Button asChild className="gap-2">
                 <Link href={activeTab === "movies" ? "/sekai-control/movies/new" : "/sekai-control/series/new"}>
@@ -148,9 +207,11 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {activeTab === "movies" ? (
+          {isLoading ? (
+            <ContentListSkeleton />
+          ) : activeTab === "movies" ? (
             <div className="grid gap-3">
-              {movies.map((movie) => (
+              {filteredMovies.map((movie) => (
                 <article
                   key={movie._id}
                   className="grid gap-3 rounded-md border border-border p-4 md:grid-cols-[160px_1fr_auto] md:items-center"
@@ -172,13 +233,15 @@ export default function AdminDashboard() {
                   </div>
                 </article>
               ))}
-              {!movies.length && (
-                <p className="rounded-md border border-border p-4 text-sm text-muted-foreground">No movies found.</p>
+              {!filteredMovies.length && (
+                <p className="rounded-md border border-border p-4 text-sm text-muted-foreground">
+                  {movies.length ? `No movies found for "${activeSearchQuery.trim()}".` : "No movies found."}
+                </p>
               )}
             </div>
           ) : (
             <div className="grid gap-3">
-              {seriesList.map((series) => (
+              {filteredSeries.map((series) => (
                 <article
                   key={series._id}
                   className="grid gap-3 rounded-md border border-border p-4 md:grid-cols-[160px_1fr_auto] md:items-center"
@@ -201,8 +264,10 @@ export default function AdminDashboard() {
                   </div>
                 </article>
               ))}
-              {!seriesList.length && (
-                <p className="rounded-md border border-border p-4 text-sm text-muted-foreground">No series found.</p>
+              {!filteredSeries.length && (
+                <p className="rounded-md border border-border p-4 text-sm text-muted-foreground">
+                  {seriesList.length ? `No series found for "${activeSearchQuery.trim()}".` : "No series found."}
+                </p>
               )}
             </div>
           )}

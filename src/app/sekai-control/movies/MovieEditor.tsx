@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -22,6 +22,16 @@ type MovieForm = {
   url: string;
 };
 
+type StagedFile = {
+  file: File;
+  previewUrl: string;
+};
+
+type StagedMovieFiles = {
+  thumbnail: StagedFile | null;
+  url: StagedFile | null;
+};
+
 const emptyMovieForm: MovieForm = {
   title: "",
   description: "",
@@ -32,11 +42,23 @@ const emptyMovieForm: MovieForm = {
 export default function MovieEditor({ movieId }: { movieId?: string }) {
   const router = useRouter();
   const { edgestore } = useEdgeStore();
+  const objectUrlsRef = useRef<string[]>([]);
   const [form, setForm] = useState<MovieForm>(emptyMovieForm);
+  const [stagedFiles, setStagedFiles] = useState<StagedMovieFiles>({
+    thumbnail: null,
+    url: null,
+  });
   const [isLoading, setIsLoading] = useState(Boolean(movieId));
   const [isSaving, setIsSaving] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadingLabel, setUploadingLabel] = useState("");
+
+  useEffect(() => {
+    return () => {
+      objectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      objectUrlsRef.current = [];
+    };
+  }, []);
 
   useEffect(() => {
     if (!movieId) return;
@@ -63,6 +85,24 @@ export default function MovieEditor({ movieId }: { movieId?: string }) {
     fetchMovie();
   }, [movieId, router]);
 
+  const createStagedFile = (file: File): StagedFile => {
+    const previewUrl = URL.createObjectURL(file);
+    objectUrlsRef.current.push(previewUrl);
+    return { file, previewUrl };
+  };
+
+  const revokeStagedFile = (stagedFile?: StagedFile | null) => {
+    if (!stagedFile) return;
+
+    URL.revokeObjectURL(stagedFile.previewUrl);
+    objectUrlsRef.current = objectUrlsRef.current.filter((url) => url !== stagedFile.previewUrl);
+  };
+
+  const clearStagedFile = (field: keyof StagedMovieFiles, stagedFile = stagedFiles[field]) => {
+    revokeStagedFile(stagedFile);
+    setStagedFiles((current) => ({ ...current, [field]: null }));
+  };
+
   const uploadFile = async (file: File, label: string) => {
     setUploadingLabel(label);
     setUploadProgress(0);
@@ -71,45 +111,89 @@ export default function MovieEditor({ movieId }: { movieId?: string }) {
         file,
         onProgressChange: setUploadProgress,
       });
-      toast.success(`${label} uploaded`);
       return upload.url;
     } catch (error: any) {
-      toast.error(error.message || `${label} upload failed`);
-      return "";
+      throw new Error(error.message || `${label} upload failed`);
     } finally {
       setUploadingLabel("");
       setUploadProgress(0);
     }
   };
 
-  const handleFileUpload = async (
+  const handleFileSelection = (
     event: React.ChangeEvent<HTMLInputElement>,
-    field: "thumbnail" | "url",
-    label: string
+    field: keyof StagedMovieFiles
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const url = await uploadFile(file, label);
-    if (url) {
-      setForm((current) => ({ ...current, [field]: url }));
-    }
+    const stagedFile = createStagedFile(file);
+    revokeStagedFile(stagedFiles[field]);
+    setStagedFiles((current) => ({ ...current, [field]: stagedFile }));
     event.target.value = "";
   };
 
+  const updateMediaUrl = (field: keyof StagedMovieFiles, value: string) => {
+    clearStagedFile(field);
+    setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const validateMovieForm = () => {
+    if (!form.title.trim()) {
+      toast.error("Movie title is required.");
+      return false;
+    }
+
+    if (!form.thumbnail.trim() && !stagedFiles.thumbnail) {
+      toast.error("Movie thumbnail is required.");
+      return false;
+    }
+
+    if (!form.url.trim() && !stagedFiles.url) {
+      toast.error("Movie video is required.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const uploadStagedMovieFiles = async () => {
+    let payload = { ...form };
+
+    if (stagedFiles.thumbnail) {
+      const thumbnail = await uploadFile(stagedFiles.thumbnail.file, "Uploading movie thumbnail");
+      payload = { ...payload, thumbnail };
+      setForm((current) => ({ ...current, thumbnail }));
+      clearStagedFile("thumbnail", stagedFiles.thumbnail);
+    }
+
+    if (stagedFiles.url) {
+      const url = await uploadFile(stagedFiles.url.file, "Uploading movie video");
+      payload = { ...payload, url };
+      setForm((current) => ({ ...current, url }));
+      clearStagedFile("url", stagedFiles.url);
+    }
+
+    return payload;
+  };
+
   const saveMovie = async () => {
+    if (!validateMovieForm()) return;
+
     try {
       setIsSaving(true);
+      const payload = await uploadStagedMovieFiles();
+
       if (movieId) {
-        await axios.put(`/api/admin/movies/${movieId}`, form);
+        await axios.put(`/api/admin/movies/${movieId}`, payload);
         toast.success("Movie updated");
       } else {
-        await axios.post("/api/admin/movies", form);
+        await axios.post("/api/admin/movies", payload);
         toast.success("Movie created");
       }
       router.push("/sekai-control?tab=movies");
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Movie save failed.");
+      toast.error(error.response?.data?.error || error.message || "Movie save failed.");
     } finally {
       setIsSaving(false);
     }
@@ -156,15 +240,15 @@ export default function MovieEditor({ movieId }: { movieId?: string }) {
               </div>
               <div className="grid gap-2">
                 <Label>Thumbnail URL</Label>
-                <Input value={form.thumbnail} onChange={(event) => setForm({ ...form, thumbnail: event.target.value })} />
-                <Input type="file" accept="image/*" onChange={(event) => handleFileUpload(event, "thumbnail", "Movie thumbnail")} />
-                <MediaPreview label="Thumbnail" type="image" url={form.thumbnail} />
+                <Input value={form.thumbnail} onChange={(event) => updateMediaUrl("thumbnail", event.target.value)} />
+                <Input type="file" accept="image/*" onChange={(event) => handleFileSelection(event, "thumbnail")} />
+                <MediaPreview label="Thumbnail" type="image" url={stagedFiles.thumbnail?.previewUrl || form.thumbnail} />
               </div>
               <div className="grid gap-2">
                 <Label>Video URL</Label>
-                <Input value={form.url} onChange={(event) => setForm({ ...form, url: event.target.value })} />
-                <Input type="file" accept="video/*" onChange={(event) => handleFileUpload(event, "url", "Movie video")} />
-                <MediaPreview label="Video" type="video" url={form.url} />
+                <Input value={form.url} onChange={(event) => updateMediaUrl("url", event.target.value)} />
+                <Input type="file" accept="video/*" onChange={(event) => handleFileSelection(event, "url")} />
+                <MediaPreview label="Video" type="video" url={stagedFiles.url?.previewUrl || form.url} />
               </div>
               <Button type="button" className="gap-2" disabled={isSaving} onClick={saveMovie}>
                 <SaveIcon fontSize="small" />
