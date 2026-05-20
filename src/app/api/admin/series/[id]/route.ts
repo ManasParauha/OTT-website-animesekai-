@@ -68,6 +68,27 @@ function collectSeriesUrls(series: any) {
   ];
 }
 
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const denied = await denyIfNotAdmin(request);
+  if (denied) return denied;
+
+  if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    return NextResponse.json({ error: "Invalid series id." }, { status: 400 });
+  }
+
+  try {
+    const series = await Series.findById(params.id);
+
+    if (!series) {
+      return NextResponse.json({ error: "Series not found." }, { status: 404 });
+    }
+
+    return NextResponse.json({ series }, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   const denied = await denyIfNotAdmin(request);
   if (denied) return denied;
@@ -128,4 +149,3 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-

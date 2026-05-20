@@ -1,7 +1,5 @@
-import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import { getAdminAuthFromToken } from "@/helpers/adminAuth";
 import AdminDashboard from "./AdminDashboard";
+import { requireAdminPage } from "./requireAdminPage";
 
 export const dynamic = "force-dynamic";
 
@@ -10,16 +8,7 @@ export const metadata = {
 };
 
 export default async function SekaiControlPage() {
-  const auth = await getAdminAuthFromToken(cookies().get("token")?.value);
-
-  if (auth.status === "unauthenticated") {
-    redirect("/Login");
-  }
-
-  if (auth.status !== "authorized") {
-    notFound();
-  }
+  await requireAdminPage();
 
   return <AdminDashboard />;
 }
-

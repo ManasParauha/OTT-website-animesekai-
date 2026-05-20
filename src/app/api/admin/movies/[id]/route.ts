@@ -33,6 +33,27 @@ function validateMoviePayload(body: any) {
   };
 }
 
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const denied = await denyIfNotAdmin(request);
+  if (denied) return denied;
+
+  if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    return NextResponse.json({ error: "Invalid movie id." }, { status: 400 });
+  }
+
+  try {
+    const movie = await Movie.findById(params.id);
+
+    if (!movie) {
+      return NextResponse.json({ error: "Movie not found." }, { status: 404 });
+    }
+
+    return NextResponse.json({ movie }, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   const denied = await denyIfNotAdmin(request);
   if (denied) return denied;
@@ -93,4 +114,3 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
