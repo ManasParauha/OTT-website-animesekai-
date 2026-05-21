@@ -4,10 +4,9 @@ import Image from 'next/image'
 import poster from "../../public/blur.jpg"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import axios from 'axios';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -56,12 +55,15 @@ const TopSeries = ({onWatchlistChange}: props)  => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [data, setData] = React.useState<
     {
-      seriesTitle: string,
+      title: string,
+      description: string,
       thumbnail: string,
-      episodeNo: number,
-      url: string,
-      id: string,
-      _id: string
+      episodes: {
+        episodeNo: number,
+        thumbnail: string,
+        url: string,
+      }[],
+      _id: string,
     }[]>([])
 
 
@@ -69,9 +71,8 @@ const TopSeries = ({onWatchlistChange}: props)  => {
     const seriesDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get('/api/admin/fetchSeriesHome1');
-        // console.log(res.data.data);
-        setData(res.data)
+        const res = await axios.get('/api/admin/fetchSeriesHome');
+        setData(res.data.data || [])
       } catch (error: any) {
         console.log("video fetching failed", error.message);
         toast.error(error.message);
@@ -123,19 +124,17 @@ const TopSeries = ({onWatchlistChange}: props)  => {
 
           <Image src={data?.thumbnail || poster} alt='#' className='min-h-40 min-w-60' height={400} width={600} />
 
-          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data?.seriesTitle || "title"}</p>
+          <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20'>{data?.title || "title"}</p>
 
-          <Button className=' transition-opacity gap-2 group-hover:opacity-100 opacity-0 flex left-6 absolute bottom-3 z-20'> <Link href={
-            {
-              pathname: '/Player',
-              query: data
-            }
-          }> <PlayArrowIcon /> Play Now</Link></Button>
-
-          <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
+          <div className='absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
+            <Button asChild className='min-w-0 flex-1 gap-2'>
+              <Link href={`/Series/${data._id}`}>
+                <OpenInNewIcon /> Open Series
+              </Link>
+            </Button>
 
             {user && (
-              <WatchlistButton userId={user} videoId={data.id} videoType={"series"} onWatchlistChange={onWatchlistChange}  />
+              <WatchlistButton userId={user} videoId={data._id} videoType={"series"} onWatchlistChange={onWatchlistChange} />
             )}
 
           </div>

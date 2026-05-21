@@ -144,6 +144,7 @@ import poster from '../../public/blur.jpg';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 // Define types for the data structure
 interface VideoDetails {
   title: string;
@@ -194,14 +195,23 @@ const Watchlist: React.FC<WatchlistProps> = ({ userId, watchlist, onWatchlistCha
         {Array.isArray(watchlist) && watchlist.map((data) => (<div key={data.videoId} className='group relative flex justify-center h-40 w-60  '>
           <Image src={data.videoDetails?.thumbnail || poster} alt='#' className='min-h-40 min-w-60  ' height={400} width={600} />
           <p className='group-hover:opacity-100 opacity-0  absolute top-3 text-2xl font-semibold text-foreground transition-opacity z-20  '>{data?.videoDetails?.title || "title"}</p>
-          {<Button className=' transition-opacity left-6 gap-2 group-hover:opacity-100 opacity-0 flex absolute bottom-3 z-20'><Link href={
-            {
-              pathname: '/Player',
-              query: { videoDetails: JSON.stringify(data.videoDetails) }
-            }
-          }> <PlayArrowIcon /> Play Now</Link></Button>}
-
-          <div className='absolute bottom-3 right-6 z-10  transition-opacity group-hover:opacity-100 opacity-0 ' >
+          <div className='absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
+            {data.videoType === "series" ? (
+              <Button asChild className='min-w-0 flex-1 gap-2'>
+                <Link href={`/Series/${data.videoId}`}>
+                  <OpenInNewIcon /> Open Series
+                </Link>
+              </Button>
+            ) : (
+              <Button asChild className='min-w-0 flex-1 gap-2'>
+                <Link href={
+                  {
+                    pathname: '/Player',
+                    query: { videoDetails: JSON.stringify(data.videoDetails) }
+                  }
+                }> <PlayArrowIcon /> Play Now</Link>
+              </Button>
+            )}
 
             {userId && (
               <WatchlistButton userId={userId} videoId={data.videoId} videoType={data.videoType} onWatchlistChange={onWatchlistChange} />
